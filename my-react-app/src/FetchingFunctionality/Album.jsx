@@ -31,7 +31,7 @@ const Album = () => {
         const fetchWhichList = async () => {
             const response = await fetch('http://localhost:5001/api/whichList');
             if (!response.ok) {
-                throw new Error('Fuck');
+                throw new Error('Failed to fetch whichList');
             }
             const data = await response.json()
             setWhichList(data[0]['list'])

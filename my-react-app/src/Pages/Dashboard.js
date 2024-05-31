@@ -22,9 +22,9 @@ const Dashboard = () => {
   return (
       <>
           <NavBar/>
-        <Album/>
-        <Film/>
-        <canvas id="myChart" width="50px" height="50px"></canvas>
+          <Album/>
+          <Film/>
+          <canvas id="myChart" width="50px" height="50px"></canvas>
       </>
   );
 };
