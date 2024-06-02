@@ -8,8 +8,9 @@ import NavBar from "../Components/Nav";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import SpotifySearch from "../Components/SpotifySearch";
 
-const Dashboard = () => {
+const Current = () => {
     // const [albumTitle, setAlbumTitle] = useState('')
     const [randomAlbumTracks, setRandomAlbumTracks] = useState([])
     const [randomAlbumTrackAttributes, setRandomAlbumTrackAttributes] = useState([])
@@ -24,9 +25,10 @@ const Dashboard = () => {
           <NavBar/>
           <Album/>
           <Film/>
+          <SpotifySearch/>
           <canvas id="myChart" width="50px" height="50px"></canvas>
       </>
   );
 };
 
-export default Dashboard;
+export default Current;

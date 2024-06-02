@@ -12,6 +12,7 @@ function NavBar() {
                         <Nav.Link href="/">Current</Nav.Link>
                         <Nav.Link href="/compare">Compare</Nav.Link>
                         <Nav.Link href="/playlists">Playlists</Nav.Link>
+                        <Nav.Link href="/budget">Budget</Nav.Link>
                         <Nav.Link href="/tables">Tables</Nav.Link>
                     </Nav>
                 </Container>

@@ -5,18 +5,20 @@ import {
     RouterProvider,
 } from "react-router-dom";
 
-import Root, { rootLoader } from "./routes/root";
-import Team, { teamLoader } from "./routes/team";
+import Root, {rootLoader} from "./routes/root";
+import Team, {teamLoader} from "./routes/team";
+import {DevSupport} from "@react-buddy/ide-toolbox";
+import {ComponentPreviews, useInitial} from "../dev";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Root />,
+        element: <Root/>,
         loader: rootLoader,
         children: [
             {
                 path: "team",
-                element: <Team />,
+                element: <Team/>,
                 loader: teamLoader,
             },
         ],
@@ -24,5 +26,9 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <RouterProvider router={router} />
+    <DevSupport ComponentPreviews={ComponentPreviews}
+                useInitialHook={useInitial}
+    >
+        <RouterProvider router={router}/>
+    </DevSupport>
 );
