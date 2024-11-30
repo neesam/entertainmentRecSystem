@@ -9,6 +9,11 @@ const port = 5001;
 app.use(cors());
 app.use(express.json());
 
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`); // Logs the method and URL
+    next();
+});
+
 // PostgreSQL connection
 const pool = new Pool({
     user: 'postgres',
@@ -18,10 +23,21 @@ const pool = new Pool({
     port: 5432,
 });
 
-// WhichList
-app.get('/api/whichList', async (req, res) => {
+// whichTable
+
+app.get('/api/whichMusicTable', async (req, res) => {
     try {
-        const result = await pool.query('select * from public.which_musiclist order by random() limit 1');
+        const result = await pool.query('SELECT * FROM music_tables."whichTable" order by random() limit 1');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/whichFilmTable', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM "filmTables"."whichTable" order by random() limit 1');
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);
@@ -30,9 +46,10 @@ app.get('/api/whichList', async (req, res) => {
 });
 
 // Album/artist tables
-app.get('/api/album_4nhalfstar', async (req, res) => {
+
+app.get('/api/musicTable1', async (req, res) => {
     try {
-        const result = await pool.query('select * from public.album_4nhalfstar order by random() limit 1');
+        const result = await pool.query('SELECT * FROM music_tables."musicTable1" order by random() limit 1');
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);
@@ -40,9 +57,9 @@ app.get('/api/album_4nhalfstar', async (req, res) => {
     }
 });
 
-app.get('/api/album_4star', async (req, res) => {
+app.get('/api/musicTable2', async (req, res) => {
     try {
-        const result = await pool.query('select * from public.album_4star order by random() limit 1');
+        const result = await pool.query('SELECT * FROM music_tables."musicTable2" order by random() limit 1');
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);
@@ -50,9 +67,9 @@ app.get('/api/album_4star', async (req, res) => {
     }
 });
 
-app.get('/api/album_5star', async (req, res) => {
+app.get('/api/musicTable3', async (req, res) => {
     try {
-        const result = await pool.query('select * from public.album_5star order by random() limit 1');
+        const result = await pool.query('SELECT * FROM music_tables."musicTable3" order by random() limit 1');
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);
@@ -60,9 +77,9 @@ app.get('/api/album_5star', async (req, res) => {
     }
 });
 
-app.get('/api/album_allgenres', async (req, res) => {
+app.get('/api/musicTable4', async (req, res) => {
     try {
-        const result = await pool.query('select * from public.album_allgenres order by random() limit 1');
+        const result = await pool.query('SELECT * FROM music_tables."musicTable4" order by random() limit 1');
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);
@@ -70,9 +87,9 @@ app.get('/api/album_allgenres', async (req, res) => {
     }
 });
 
-app.get('/api/album_brokentransmission', async (req, res) => {
+app.get('/api/musicTable5', async (req, res) => {
     try {
-        const result = await pool.query('select * from public.album_brokentransmission order by random() limit 1');
+        const result = await pool.query('SELECT * FROM music_tables."musicTable5" order by random() limit 1');
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);
@@ -80,199 +97,9 @@ app.get('/api/album_brokentransmission', async (req, res) => {
     }
 });
 
-app.get('/api/album_createdbyrejection', async (req, res) => {
+app.get('/api/wantToListen', async (req, res) => {
     try {
-        const result = await pool.query('select * from public.album_createdbyrejection order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_emo', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_emo order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_emoautumn', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_emoautumn order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_greatscene', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_greatscene order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_guysfavemoalbums', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_guysfavemoalbums order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_hopelessrecords', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_hopelessrecords order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_indiepop', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_indiepop order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_magicsheet', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_magicsheet order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_moenieandkitchie', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_moenieandkitchie order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_popalbums', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_popalbums order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_risecore', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_risecore order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_rymrecs', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_rymrecs order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_sceneessentials', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_sceneessentials order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_tolisten', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_tolisten order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_vaporwave', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.album_vaporwave order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/artist_4or5', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.artist_4or5 order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/artist_4star', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.artist_4star order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/artist_female_voice', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.artist_female_voice order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/artist_roughguide', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.artist_roughguide order by random() limit 1');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/artist_spotifyliked', async (req, res) => {
-    try {
-        const result = await pool.query('select * from public.artist_spotifyliked order by random() limit 1');
+        const result = await pool.query('SELECT * FROM music_tables."wantToListen" order by random() limit 1');
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);
@@ -284,13 +111,91 @@ app.get('/api/artist_spotifyliked', async (req, res) => {
 
 app.get('/api/film_visualhypnagogia', async (req, res) => {
     try {
-        const result = await pool.query('select * from public.film_visualhypnagogia order by random() limit 1');
+        const result = await pool.query('select * from "filmTables"."film_visualhypnagogia" order by random() limit 1');
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
     }
 });
+
+app.get('/api/film_ebert', async (req, res) => {
+    try {
+        const result = await pool.query('select * from "filmTables"."film_ebert" order by random() limit 1');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/film_imdb250', async (req, res) => {
+    try {
+        const result = await pool.query('select * from "filmTables"."film_imdb250" order by random() limit 1');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/film_towatch', async (req, res) => {
+    try {
+        const result = await pool.query('select * from "filmTables"."film_towatch" order by random() limit 1');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/filmrecs', async (req, res) => {
+    try {
+        const result = await pool.query('select * from "filmTables"."filmrecs" order by random() limit 1');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/film_rymtop1500', async (req, res) => {
+    try {
+        const result = await pool.query('select * from "filmTables"."film_rymtop1500" order by random() limit 1');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+// shows
+
+app.get('/api/shows', async (req, res) => {
+    try {
+        const result = await pool.query('select * from "shows"."shows" order by random() limit 1')
+        res.json(result.rows)
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server Error')
+    }
+})
+
+// app.delete('/api/shows/:id', async (req, res) => {
+//     const showId = parseInt(req.params.id);
+//     console.log(showId, '------> from server')
+
+//     try {
+//         const result = await pool.query('delete from "shows"."shows" where id = $1', [showId])
+
+//         if (result.rowCount === 0) {
+//             return res.status(404).send('Show not found')
+//         }
+//     } catch (err) {
+//         console.log(err.message);
+//         res.status(500).send('Server Error')
+//     }
+// })
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
