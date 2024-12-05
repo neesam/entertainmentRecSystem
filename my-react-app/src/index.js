@@ -6,6 +6,7 @@ import Current from './Pages/Current';
 import Compare from "./Pages/Compare";
 import reportWebVitals from './Tests/reportWebVitals';
 import Budget from "./Pages/Budget";
+import './Style/App.css';
 
 const router = createBrowserRouter([
     {

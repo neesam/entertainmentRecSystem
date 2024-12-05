@@ -5,7 +5,7 @@ import React, {useState} from "react";
 
 import EntCard from '../Components/Card';
 
-const Show = () => {
+const Show = ({isStaticMode}) => {
 
     const [show, setShow] = useState('')
     const [backgroundColor, setBackgroundColor] = useState('')
@@ -61,7 +61,7 @@ const Show = () => {
 
     return (
         <EntCard 
-            attributes={{ color: backgroundColor, title: show, type: 'show' }}
+            attributes={{ color: isStaticMode ? backgroundColor : 'skyblue', title: show, type: 'show' }}
             clickFunction={fetchShow}
             // deleteFunction={deleteShow}
          />

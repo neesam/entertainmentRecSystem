@@ -4,12 +4,13 @@ import Button from "react-bootstrap/Button";
 import React, {useState} from "react";
 import EntCard from '../Components/Card';
 
-const Film = () => {
+const Film = ({isStaticMode}) => {
 
     const [whichTable, setWhichTable] = useState('')
     const [film, setFilm] = useState('')
     const [tablesUsed, setTablesUsed] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
+    const [colorMode, setColorMode] = useState('')
 
     useEffect(() => {
         const filmValue = localStorage.getItem('film')
@@ -94,14 +95,10 @@ const Film = () => {
 
         fetchWhichTable();
     }
-
-    const deleteFilm = async () => {
-        
-    }
-
+    
     return (
         <EntCard 
-            attributes={{ color: backgroundColor, title: film, type: 'film' }}
+            attributes={{ color: isStaticMode ? backgroundColor : 'pink', title: film, type: 'film' }}
             clickFunction={getFilm}
          />
     )

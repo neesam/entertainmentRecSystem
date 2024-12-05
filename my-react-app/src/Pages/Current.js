@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Album from "../FetchingFunctionality/Album";
 import Show from '../FetchingFunctionality/Show';
 import Film from "../FetchingFunctionality/Film";
@@ -21,12 +21,36 @@ const Current = () => {
 
     // const { albumTracks, albumTrackAttributes, chartData, RYMPlaylistAlbumID } = GetAttributesForRYMAlbum();
 
+    const [staticMode, setIsStaticMode] = useState('')
+
+    useEffect(() => {
+
+        const mode = localStorage.getItem('staticMode')
+
+        if (!mode) {
+            setIsStaticMode(false)
+            localStorage.setItem('mode', false)
+        } else {
+            setIsStaticMode(mode)
+        }
+
+    }, []);
+
+    const toggleStaticMode = () => {
+        setIsStaticMode((prevMode) => !prevMode);
+        localStorage.setItem('staticMode', !staticMode)
+      };
+
   return (
       <>
-          {/* <NavBar/> */}
-          <Album/>
-          <Film/>
-          <Show/>
+        <button
+            onClick={toggleStaticMode}
+            className="spotify-login-button">
+                {staticMode ? 'Static colors' : 'Random colors'}
+        </button>
+        <Album isStaticMode={staticMode}/>
+        <Film isStaticMode={staticMode}/>
+        <Show isStaticMode={staticMode}/>
       </>
   );
 };

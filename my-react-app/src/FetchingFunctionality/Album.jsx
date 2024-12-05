@@ -5,7 +5,16 @@ import React, {useState} from "react";
 
 import EntCard from '../Components/Card';
 
-const Album = () => {
+import randomColor from '../Helper/randomColor';
+
+const Album = ({isStaticMode}) => {
+
+    const CLIENT_ID = "6c8c67a752cb4098b34ac5e6865f76a3"
+    const REDIRECT_URI = "http://localhost:3000/"
+    const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize"
+    const RESPONSE_TYPE = "token"
+
+    const [token, setToken] = useState('')
 
     const [whichTable, setWhichTable] = useState('')
     const [album, setAlbum] = useState('')
@@ -14,6 +23,26 @@ const Album = () => {
 
 
     useEffect(() => {
+
+        // Logic to retrieve token from Spotify
+
+        // const hash = window.location.hash
+        // let token = window.localStorage.getItem("token")
+
+        // if (!token && hash) {
+        //     token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1]
+
+        //     window.location.hash = ""
+        //     window.localStorage.setItem("token", token)
+        // }
+
+        // if (token) {
+        //     let btn = document.querySelector('.spotify-login-button');
+        //     btn.style.display = 'none'
+        // }
+
+        // setToken(token)
+
         const albumValue = localStorage.getItem('album')
         setAlbum(albumValue)
 
@@ -22,9 +51,30 @@ const Album = () => {
 
         const albumBackgroundColor = localStorage.getItem('albumBackgroundColor');
         setBackgroundColor(albumBackgroundColor)
+
+        if (isStaticMode === false) {
+            const randColor = randomColor()
+            setBackgroundColor(randColor)
+            localStorage.setItem('albumBackgroundColor', randColor);
+        }
     }, []);
 
     const getAlbum = async () => {
+
+        // const getSpotifyDataForAlbum = async () => {
+        //     const response = await fetch('https://api.spotify.com/v1/search', {
+        //         headers: {
+        //             Authorization: `Bearer ${token}`
+        //         },
+        //         params: {
+        //             q: searchKey,
+        //             type: "artist"
+        //         }
+        //     })
+        // }
+
+        // Function to fetch actual album
+
         const fetchAlbumFromWhichTable = async (whichTable) => {
             const response = await fetch(`http://localhost:5001/api/${whichTable}`)
             if (!response.ok) {
@@ -35,19 +85,14 @@ const Album = () => {
             setAlbum(data[0]['entry'])
             localStorage.setItem('album', data[0]['entry'])
 
-            function randomIntFromInterval(min, max) { // min and max included 
-                return Math.floor(Math.random() * (max - min + 1) + min);
-            }
-    
-            const rgb1 = randomIntFromInterval(190, 255)
-            const rgb2 = randomIntFromInterval(190, 255)
-            const rgb3 = randomIntFromInterval(190, 255)
-    
-            const bgColor = 'rgb(' + rgb1 + ',' + rgb2 + ',' + rgb3 + ')'
-    
+            // Logic to change background on each button press
+
+            const bgColor = randomColor()
             setBackgroundColor(bgColor)
             localStorage.setItem('albumBackgroundColor', bgColor)
         }
+
+        // Function to retrieve specific table
 
         const fetchWhichTable = async () => {
 
@@ -95,10 +140,16 @@ const Album = () => {
     }
 
     return (
+        <>
         <EntCard 
-            attributes={{ color: backgroundColor, title: album, type: 'album' }}
+            attributes={{ color: isStaticMode ? backgroundColor : 'white', title: album, type: 'album' }}
             clickFunction={getAlbum}
          />
+        {/* <a
+            href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}
+            className="spotify-login-button">
+        </a> */}
+         </>
     )
 }
 
