@@ -22,20 +22,19 @@ const EntCard = ({clickFunction, deleteFunction, attributes}) => {
             }}>
                 <Card.Body>
                     <Card.Title>{attributes.title}</Card.Title>
-                    <Card.Subtitle>{attributes.type}</Card.Subtitle>
                 </Card.Body>
                 <div>
                     <Button 
-                        style={{marginLeft: '5%', marginRight: '5%', marginBottom: '5%'}} 
+                        style={{marginLeft: '5%', marginRight: '5%', marginBottom: '3%'}} 
                         onClick={clickFunction}>
                         Get {attributes.type}
                     </Button>
-                    {/* <Button 
-                        style={{marginLeft: '5%', marginRight: '5%', marginBottom: '5%'}} 
+                    <Button 
+                        style={{marginRight: '5%', marginBottom: '3%'}} 
                         variant='danger'
                         onClick={deleteFunction}>
                         Delete {attributes.type}
-                    </Button> */}
+                    </Button>
                 </div>
             </Card>
         </div>

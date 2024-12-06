@@ -44,26 +44,27 @@ const Show = ({isStaticMode}) => {
 
     }
 
-    // const deleteShow = async () => {
-    //     console.log(`Requesting DELETE for show ID: ${show.id}`);
-    //     try {
-    //         const response = await fetch(`http://localhost:5001/api/shows/${show.id}`, {
-    //             method: 'DELETE'
-    //         })
+    const deleteShow = async () => {
+        console.log(show)
+        // console.log(`Requesting DELETE for show ID: ${show.id}`);
+        // try {
+        //     const response = await fetch(`http://localhost:5001/api/shows/${show.id}`, {
+        //         method: 'DELETE'
+        //     })
 
-    //         const data = await response.json()
-    //         console.log(data[0])
-    //     } catch (err) {
-    //         console.log(err.message);
-    //     }
-    //     fetchShow()
-    // }
+        //     const data = await response.json()
+        //     console.log(data[0])
+        // } catch (err) {
+        //     console.log(err.message);
+        // }
+        // fetchShow()
+    }
 
     return (
         <EntCard 
             attributes={{ color: isStaticMode ? backgroundColor : 'skyblue', title: show, type: 'show' }}
             clickFunction={fetchShow}
-            // deleteFunction={deleteShow}
+            deleteFunction={deleteShow}
          />
     )
 }

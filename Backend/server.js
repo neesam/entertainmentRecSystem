@@ -173,7 +173,7 @@ app.get('/api/film_rymtop1500', async (req, res) => {
 
 app.get('/api/shows', async (req, res) => {
     try {
-        const result = await pool.query('select * from "shows"."shows" order by random() limit 1')
+        const result = await pool.query('select * from "shows"."fakeShows" order by random() limit 1')
         res.json(result.rows)
     } catch (err) {
         console.log(err.message);
@@ -181,21 +181,21 @@ app.get('/api/shows', async (req, res) => {
     }
 })
 
-// app.delete('/api/shows/:id', async (req, res) => {
-//     const showId = parseInt(req.params.id);
-//     console.log(showId, '------> from server')
+app.delete('/api/shows/:id', async (req, res) => {
+    const showId = parseInt(req.params.id);
+    console.log(showId, '------> from server')
 
-//     try {
-//         const result = await pool.query('delete from "shows"."shows" where id = $1', [showId])
+    try {
+        const result = await pool.query('delete from "shows"."shows" where id = $1', [showId])
 
-//         if (result.rowCount === 0) {
-//             return res.status(404).send('Show not found')
-//         }
-//     } catch (err) {
-//         console.log(err.message);
-//         res.status(500).send('Server Error')
-//     }
-// })
+        if (result.rowCount === 0) {
+            return res.status(404).send('Show not found')
+        }
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server Error')
+    }
+})
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
