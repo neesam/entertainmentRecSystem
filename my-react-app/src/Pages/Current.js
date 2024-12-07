@@ -8,6 +8,7 @@ import NavBar from "../Components/Nav";
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Modal from 'react-modal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SpotifySearch from "../Components/SpotifySearch";
 

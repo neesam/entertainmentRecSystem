@@ -169,11 +169,30 @@ app.get('/api/film_rymtop1500', async (req, res) => {
     }
 });
 
+// app.delete('/api/film/:id/:whichTable', async (req, res) => {
+//     const filmID = parseInt(req.params.id);
+//     const whichTable = req.params.whichTable;
+//     console.log(`Received DELETE request for id: ${filmID} from ${whichTable}`);
+
+//     try {
+//         const result = await pool.query('delete from "filmTables".$1 where id = $2', [[filmID, whichTable]],)
+
+//         if (result.rowCount === 0) {
+//             return res.status(404).send('Show not found')
+//         }
+
+//         res.status(200).send({ message: 'Show deleted successfully' });
+//     } catch (err) {
+//         console.log(err.message);
+//         res.status(500).send('Server Error')
+//     }
+// })
+
 // shows
 
 app.get('/api/shows', async (req, res) => {
     try {
-        const result = await pool.query('select * from "shows"."fakeShows" order by random() limit 1')
+        const result = await pool.query('select * from "shows"."shows" order by random() limit 1')
         res.json(result.rows)
     } catch (err) {
         console.log(err.message);
@@ -183,7 +202,7 @@ app.get('/api/shows', async (req, res) => {
 
 app.delete('/api/shows/:id', async (req, res) => {
     const showId = parseInt(req.params.id);
-    console.log(showId, '------> from server')
+    console.log(`Received DELETE request for id: ${showId}`);
 
     try {
         const result = await pool.query('delete from "shows"."shows" where id = $1', [showId])
@@ -191,6 +210,8 @@ app.delete('/api/shows/:id', async (req, res) => {
         if (result.rowCount === 0) {
             return res.status(404).send('Show not found')
         }
+
+        res.status(200).send({ message: 'Show deleted successfully' });
     } catch (err) {
         console.log(err.message);
         res.status(500).send('Server Error')

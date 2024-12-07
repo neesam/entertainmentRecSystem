@@ -4,10 +4,13 @@ import Button from "react-bootstrap/Button";
 import React, {useState} from "react";
 import EntCard from '../Components/Card';
 
+import randomColor from '../Helper/randomColor';
+
 const Film = ({isStaticMode}) => {
 
     const [whichTable, setWhichTable] = useState('')
     const [film, setFilm] = useState('')
+    const [filmID, setFilmID] = useState('')
     const [tablesUsed, setTablesUsed] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
     const [colorMode, setColorMode] = useState('')
@@ -34,17 +37,10 @@ const Film = ({isStaticMode}) => {
             console.log(data)
 
             setFilm(data[0]['film'])
+            setFilmID(data[0]['id'])
             localStorage.setItem('film', data[0]['film'])
 
-            function randomIntFromInterval(min, max) { // min and max included 
-                return Math.floor(Math.random() * (max - min + 1) + min);
-            }
-    
-            const rgb1 = randomIntFromInterval(190, 255)
-            const rgb2 = randomIntFromInterval(190, 255)
-            const rgb3 = randomIntFromInterval(190, 255)
-    
-            const bgColor = 'rgb(' + rgb1 + ',' + rgb2 + ',' + rgb3 + ')'
+            const bgColor = randomColor()
     
             setBackgroundColor(bgColor)
             localStorage.setItem('filmBackgroundColor', bgColor)
@@ -95,11 +91,28 @@ const Film = ({isStaticMode}) => {
 
         fetchWhichTable();
     }
+
+    // const deleteFilm = async () => {
+    //     console.log(filmID)
+    //     console.log(`Requesting DELETE for film ID: ${filmID}`);
+    //     try {
+    //         const response = await fetch(`http://localhost:5001/api/film/${filmID}/${whichTable}`, {
+    //             method: 'DELETE'
+    //         })
+
+    //         const data = await response.json()
+    //         console.log(data.message)
+    //     } catch (err) {
+    //         console.log(err.message);
+    //     }
+    //     getFilm()
+    // }
     
     return (
         <EntCard 
             attributes={{ color: isStaticMode ? backgroundColor : 'pink', title: film, type: 'film' }}
             clickFunction={getFilm}
+            // deleteFunction={deleteFilm}
          />
     )
 }
