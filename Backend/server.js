@@ -24,13 +24,13 @@ const bigquery = new BigQuery({
 });
 
 // PostgreSQL connection
-const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'postgres',
-    password: 'root',
-    port: 5432,
-});
+// const pool = new Pool({
+//     user: 'postgres',
+//     host: 'localhost',
+//     database: 'postgres',
+//     password: 'root',
+//     port: 5432,
+// });
 
 // whichTable
 
