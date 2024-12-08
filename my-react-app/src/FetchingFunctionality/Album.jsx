@@ -73,7 +73,7 @@ const Album = ({isStaticMode}) => {
         //     })
         // }
 
-        // Function to fetch actual album
+        // Function to fetch actual album1
 
         const fetchAlbumFromWhichTable = async (whichTable) => {
             const response = await fetch(`http://localhost:5001/api/${whichTable}`)
