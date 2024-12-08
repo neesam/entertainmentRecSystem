@@ -13,7 +13,6 @@ const Film = ({isStaticMode}) => {
     const [filmID, setFilmID] = useState('')
     const [tablesUsed, setTablesUsed] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
-    const [colorMode, setColorMode] = useState('')
 
     useEffect(() => {
         const filmValue = localStorage.getItem('film')
@@ -36,9 +35,9 @@ const Film = ({isStaticMode}) => {
 
             console.log(data)
 
-            setFilm(data[0]['film'])
-            setFilmID(data[0]['id'])
-            localStorage.setItem('film', data[0]['film'])
+            setFilm(data[0]['string_field_0'])
+            setFilmID(data[0]['int64_field_1'])
+            localStorage.setItem('film', data[0]['string_field_0'])
 
             const bgColor = randomColor()
     
@@ -66,9 +65,9 @@ const Film = ({isStaticMode}) => {
                 }
 
                 const data = await response.json()
-                const fetchedTable = data[0]['table']
+                const fetchedTable = data[0]['string_field_0']
 
-                console.log(fetchedTable)
+                console.log(data)
 
                 if (!localTablesUsed.includes(fetchedTable)) {
 

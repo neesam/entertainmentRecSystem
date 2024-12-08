@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "@google-cloud/bigquery": "^7.9.1",
     "cors": "^2.8.5",
+    "express": "^4.21.2",
     "react-modal": "^3.16.1",
     "ynab": "^2.2.0"
   }

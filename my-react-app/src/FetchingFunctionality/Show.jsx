@@ -30,9 +30,9 @@ const Show = ({isStaticMode}) => {
         }
         const data = await response.json()
 
-        setShow(data[0]['show'])
-        setShowID(data[0]['id'])
-        localStorage.setItem('show', data[0]['show'])
+        setShow(data[0]['string_field_0'])
+        setShowID(data[0]['int64_field_1'])
+        localStorage.setItem('show', data[0]['string_field_0'])
 
         const bgColor = randomColor()
 

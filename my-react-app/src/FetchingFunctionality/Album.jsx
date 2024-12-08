@@ -82,8 +82,8 @@ const Album = ({isStaticMode}) => {
             }
             const data = await response.json()
 
-            setAlbum(data[0]['entry'])
-            localStorage.setItem('album', data[0]['entry'])
+            setAlbum(data[0]['string_field_0'])
+            localStorage.setItem('album', data[0]['string_field_0'])
 
             // Logic to change background on each button press
 
@@ -114,7 +114,7 @@ const Album = ({isStaticMode}) => {
                 }
 
                 const data = await response.json()
-                const fetchedTable = data[0]['table']
+                const fetchedTable = data[0]['string_field_0']
                 console.log(fetchedTable)
 
                 if (!localTablesUsed.includes(fetchedTable)) {
