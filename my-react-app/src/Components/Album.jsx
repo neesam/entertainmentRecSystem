@@ -109,8 +109,15 @@ const Album = ({isStaticMode}) => {
             }
             const data = await response.json()
 
-            setAlbum(data[0]['string_field_0'])
-            localStorage.setItem('album', data[0]['string_field_0'])
+            console.log(data)
+
+            if (data[0]['string_field_1']) {
+                setAlbum(data[0]['string_field_0'] + ' - ' + data[0]['string_field_1'])
+                localStorage.setItem('album', data[0]['string_field_0'] + ' - ' + data[0]['string_field_1'])
+            } else {
+                setAlbum(data[0]['string_field_0'])
+                localStorage.setItem('album', data[0]['string_field_0'])
+            }
 
             // Logic to change background on each button press
 
@@ -173,8 +180,15 @@ const Album = ({isStaticMode}) => {
             }
             const data = await response.json()
 
-            setAlbum(data[0]['string_field_0'])
-            localStorage.setItem('album', data[0]['string_field_0'])
+            console.log(data)
+
+            if (data[0]['string_field_1']) {
+                setAlbum(data[0]['string_field_0'] + ' - ' + data[0]['string_field_1'])
+                localStorage.setItem('album', data[0]['string_field_0'] + ' - ' + data[0]['string_field_1'])
+            } else {
+                setAlbum(data[0]['string_field_0'])
+                localStorage.setItem('album', data[0]['string_field_0'])
+            }
 
             // Logic to change background on each button press
 
