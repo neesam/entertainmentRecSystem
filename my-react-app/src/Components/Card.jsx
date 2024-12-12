@@ -29,7 +29,7 @@ const EntCard = ({ clickFunction, deleteFunction, attributes, submitForm }) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '33.35vh',
+            height: '25vh',
             backgroundColor: attributes.color 
         }}>
             <Card style={{
