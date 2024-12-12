@@ -10,16 +10,29 @@ const EntCard = ({clickFunction, deleteFunction, attributes}) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '33.35vh',
-            backgroundColor: attributes.color // Optional background color
+            height: '25vh',
+            backgroundColor: attributes.color 
         }}>
             <Card style={{
-                width: '50vw', 
-                margin: '50px', 
-                padding: '10px', 
-                display: 'flex', 
-                flexDirection: "column"
+                width: '50vw',
+                margin: '50px',
+                padding: '10px',
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'relative' 
             }}>
+                <Button
+                    style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        zIndex: 1
+                    }}
+                    variant="outline-secondary"
+                    onClick={handleModalOpen}>
+                    &#9998; 
+                </Button>
+
                 <Card.Body>
                     <Card.Title>{attributes.title}</Card.Title>
                 </Card.Body>

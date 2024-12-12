@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import React, {useState} from "react";
 
-import EntCard from '../Components/Card';
+import EntCard from './Card';
 
 import randomColor from '../Helper/randomColor';
 
@@ -21,6 +21,36 @@ const Album = ({isStaticMode}) => {
     const [tablesUsed, setTablesUsed] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
 
+<<<<<<< HEAD:my-react-app/src/FetchingFunctionality/Album.jsx
+=======
+    const tables1 = [
+        'musicTable1', 
+        'musicTable2', 
+        'musicTable3', 
+        'musicTable4', 
+        'musicTable5'
+    ]
+
+    const tables2 = [
+        'album_allgenres',
+        'album_brokentransmission',
+        'album_createdbyrejection',
+        'album_emo',
+        'album_emoautumn',
+        'album_greatscene',
+        'album_guysfavemoalbums',
+        'album_hopelessrecords',
+        'album_indiepop',
+        'album_magicsheet',
+        'album_moenieandkitchie',
+        'album_popalbums',
+        'album_risecore',
+        'album_rymrecs',
+        'album_tolisten',
+        'album_vaporwave'
+    ]
+
+>>>>>>> a0a531296ec7ec1e405ecaaaa2b2f1978d59f50b:my-react-app/src/Components/Album.jsx
 
     useEffect(() => {
 
@@ -82,8 +112,15 @@ const Album = ({isStaticMode}) => {
             }
             const data = await response.json()
 
-            setAlbum(data[0]['string_field_0'])
-            localStorage.setItem('album', data[0]['string_field_0'])
+            console.log(data)
+
+            if (data[0]['string_field_1']) {
+                setAlbum(data[0]['string_field_0'] + ' - ' + data[0]['string_field_1'])
+                localStorage.setItem('album', data[0]['string_field_0'] + ' - ' + data[0]['string_field_1'])
+            } else {
+                setAlbum(data[0]['string_field_0'])
+                localStorage.setItem('album', data[0]['string_field_0'])
+            }
 
             // Logic to change background on each button press
 
@@ -98,7 +135,7 @@ const Album = ({isStaticMode}) => {
 
             let localTablesUsed = [...tablesUsed];
 
-            if (localTablesUsed.length === 6) {
+            if (localTablesUsed.length === 17) {
                 localTablesUsed = []
                 setTablesUsed([])
             }
@@ -107,7 +144,7 @@ const Album = ({isStaticMode}) => {
 
             while (!tableUsed) {
 
-                const response = await fetch('http://localhost:5001/api/whichMusicTable');
+                const response = await fetch('http://localhost:5001/api/whichMusicTable2');
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch whichTable');
@@ -139,10 +176,41 @@ const Album = ({isStaticMode}) => {
         fetchWhichTable();
     }
 
+<<<<<<< HEAD:my-react-app/src/FetchingFunctionality/Album.jsx
     return (
         <>
         <EntCard 
             attributes={{ color: isStaticMode ? backgroundColor : 'white', title: album, type: 'album' }}
+=======
+    const getFromSpecificTable = async (specificTable) => {
+        const response = await fetch(`http://localhost:5001/api/${specificTable}`)
+            if (!response.ok) {
+                throw new Error(`Failed to fetch details for ${specificTable}`);
+            }
+            const data = await response.json()
+
+            console.log(data)
+
+            if (data[0]['string_field_1']) {
+                setAlbum(data[0]['string_field_0'] + ' - ' + data[0]['string_field_1'])
+                localStorage.setItem('album', data[0]['string_field_0'] + ' - ' + data[0]['string_field_1'])
+            } else {
+                setAlbum(data[0]['string_field_0'])
+                localStorage.setItem('album', data[0]['string_field_0'])
+            }
+
+            // Logic to change background on each button press
+
+            const bgColor = randomColor()
+            setBackgroundColor(bgColor)
+            localStorage.setItem('albumBackgroundColor', bgColor)
+    }
+
+    return (
+        <>
+        <EntCard 
+            attributes={{ color: isStaticMode ? backgroundColor : 'white', title: album, type: 'album', tables: tables2 }}
+>>>>>>> a0a531296ec7ec1e405ecaaaa2b2f1978d59f50b:my-react-app/src/Components/Album.jsx
             clickFunction={getAlbum}
          />
         {/* <a

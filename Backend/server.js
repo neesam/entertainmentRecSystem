@@ -34,7 +34,7 @@ const bigquery = new BigQuery({
 
 // whichTable
 
-app.get('/api/whichMusicTable', async (req, res) => {
+app.get('/api/whichMusicTable1', async (req, res) => {
     const sqlQuery = 'select * from musiccataloginghelper.music_tables.whichTableMusic order by rand() limit 1'
 
     try {
@@ -60,7 +60,33 @@ app.get('/api/whichFilmTable', async (req, res) => {
     }
 });
 
-// Album/artist tables
+app.get('/api/whichMusicTable2', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.whichMusicTable2 order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/whichShowTable', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.show_tables.whichShowTable order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+// Album/artist tables 1
 
 app.get('/api/musicTable1', async (req, res) => {
     const sqlQuery = 'select * from musiccataloginghelper.music_tables.musicTable1 order by rand() limit 1'
@@ -129,6 +155,252 @@ app.get('/api/musicTable5', async (req, res) => {
 
 app.get('/api/wantToListen', async (req, res) => {
     const sqlQuery = 'select * from musiccataloginghelper.music_tables.wantToListen order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.delete('/api/albums/:id/:whichTable', async (req, res) => {
+    const albumID = parseInt(req.params.id);
+    const whichTable = req.params.whichTable;
+
+    console.log(`Received DELETE request for id: ${albumID} from table: ${whichTable}`);
+
+
+    // Construct the query to delete the row
+    const query = `
+        DELETE FROM \`musiccataloginghelper.music_tables.${whichTable}\`
+        WHERE int64_field_1  = @albumID
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { albumID },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Album not found');
+        }
+
+        res.status(200).send({ message: 'Album deleted successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+// Album tables 2
+
+app.get('/api/album_allgenres', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_allgenres order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_brokentransmission', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_brokentransmission order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_createdbyrejection', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_createdbyrejection order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_emo', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_emo order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_emoautumn', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_emoautumn order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_greatscene', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_greatscene order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_guysfavemoalbums', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_guysfavemoalbums order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_hopelessrecords', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_hopelessrecords order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_indiepop', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_indiepop order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_magicsheet', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_magicsheet order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_moenieandkitchie', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_moenieandkitchie order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_popalbums', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_popalbums order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_risecore', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_risecore order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+app.get('/api/album_rymrecs', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_rymrecs order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_tolisten', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_tolisten order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_vaporwave', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_vaporwave order by rand() limit 1'
 
     try {
         const [rows] = await bigquery.query({ query: sqlQuery });
@@ -254,6 +526,32 @@ app.get('/api/shows', async (req, res) => {
     }
 })
 
+app.get('/api/anime_classic', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.show_tables.anime_classic order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server Error')
+    }
+})
+
+app.get('/api/anime_other', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.show_tables.anime_other order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server Error')
+    }
+})
+
 app.delete('/api/shows/:id', async (req, res) => {
     const showId = parseInt(req.params.id);
     console.log(`Received DELETE request for id: ${showId}`);
@@ -270,7 +568,50 @@ app.delete('/api/shows/:id', async (req, res) => {
         console.log(err.message);
         res.status(500).send('Server Error')
     }
+});
+
+// books
+
+app.get('/api/book_toread', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.book_tables.book_toread order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server Error')
+    }
 })
+
+app.get('/api/penguin_classics', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.book_tables.penguin_classics order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server Error')
+    }
+})
+
+app.get('/api/penguin_modern', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.book_tables.penguin_modern order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server Error')
+    }
+})
+
+// server listening function
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
