@@ -140,6 +140,43 @@ app.get('/api/wantToListen', async (req, res) => {
     }
 });
 
+app.delete('/api/albums/:id/:whichTable', async (req, res) => {
+    const albumID = parseInt(req.params.id);
+    const whichTable = req.params.whichTable;
+
+    console.log(`Received DELETE request for id: ${albumID} from table: ${whichTable}`);
+
+
+    // Construct the query to delete the row
+    const query = `
+        DELETE FROM \`musiccataloginghelper.music_tables.${whichTable}\`
+        WHERE int64_field_1 = @albumID
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { albumID },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Album not found');
+        }
+
+        res.status(200).send({ message: 'Album deleted successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 // film
 
 app.get('/api/film_visualhypnagogia', async (req, res) => {
@@ -220,24 +257,41 @@ app.get('/api/film_rymtop1500', async (req, res) => {
     }
 });
 
-// app.delete('/api/film/:id/:whichTable', async (req, res) => {
-//     const filmID = parseInt(req.params.id);
-//     const whichTable = req.params.whichTable;
-//     console.log(`Received DELETE request for id: ${filmID} from ${whichTable}`);
+app.delete('/api/films/:id/:whichTable', async (req, res) => {
+    const filmID = parseInt(req.params.id);
+    const whichTable = req.params.whichTable;
 
-//     try {
-//         const result = await pool.query('delete from "filmTables".$1 where id = $2', [[filmID, whichTable]],)
+    console.log(`Received DELETE request for id: ${filmID} from table: ${whichTable}`);
 
-//         if (result.rowCount === 0) {
-//             return res.status(404).send('Show not found')
-//         }
+    // Construct the query to delete the row
+    const query = `
+        DELETE FROM \`musiccataloginghelper.film_tables.${whichTable}\`
+        WHERE int64_field_1 = @filmID
+    `;
 
-//         res.status(200).send({ message: 'Show deleted successfully' });
-//     } catch (err) {
-//         console.log(err.message);
-//         res.status(500).send('Server Error')
-//     }
-// })
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { filmID },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Film not found');
+        }
+
+        res.status(200).send({ message: 'Film deleted successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+});
 
 // shows
 
@@ -255,22 +309,42 @@ app.get('/api/shows', async (req, res) => {
 })
 
 app.delete('/api/shows/:id', async (req, res) => {
-    const showId = parseInt(req.params.id);
-    console.log(`Received DELETE request for id: ${showId}`);
+    const showID = parseInt(req.params.id);
+
+    console.log(`Received DELETE request for id: ${showID}.`);
+
+
+    // Construct the query to delete the row
+    const query = `
+        DELETE FROM \`musiccataloginghelper.show_tables.shows\`
+        WHERE int64_field_1 = @showID
+    `;
 
     try {
-        const result = await pool.query('delete from "shows"."shows" where id = $1', [showId])
+        // Run the query
+        const options = {
+            query,
+            params: { showID },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
 
-        if (result.rowCount === 0) {
-            return res.status(404).send('Show not found')
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Show not found');
         }
 
         res.status(200).send({ message: 'Show deleted successfully' });
     } catch (err) {
-        console.log(err.message);
-        res.status(500).send('Server Error')
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
     }
-})
+});
+
+// server listening function
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

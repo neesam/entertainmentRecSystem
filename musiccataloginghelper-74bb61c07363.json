@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "musiccataloginghelper",
+  "private_key_id": "74bb61c07363296ce6a90d3b04f67092830e5b81",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC/jEc3tnEh/aCi\nJFeVnPpx9saKhg5kGNVuDVKZR35GMGMAjmEkHG0Zne2AB+Em/esq8gv+hsAI1LFr\nrqgvSkE3KeJ4FyPIJLe5okM4U3ue8NUTyKe+FloAvp2SSrPzdKVtn2QQzooTJ+At\n4mGtcBEniADmX0sVoY2sSJ8y2T9VMfxZpxWgzzthvBDzBypd151K7UXI9U2tds0n\njjH93SVNhFf3QxkMZUBOsmCg7MYgQnpXm4uybgmhhRiLOCB2yB75mzYmuTq18sYp\nt+gN1qa5AzHooGTafj8L3p1ec6Pysifimj35aV+40gVd+n0CyeCrcICsN5N3mXvy\nTuJ9o5lXAgMBAAECggEAST82OJq+dlYLaBVnnKGzr4LDd1M+C47nhrb3f/+zzNlR\n8nN/uBRar/IRUOUydvugQwLeDU2v/3B+DAR08eh+Ob79iBipKS7JRuZCuDZMToIf\nqPoREwJvFlvN25RPbeiMHfhWhorEiAC2nDU2TuFM3gYG+hE0oCfwChKXNhWXP1c9\nnwruEC58DK/etGl5/omG041c8Es+mpFh9SgtTgDqNidZLbyc9yuWwySv4MAXwDfo\n6/ukHNITL1N20yA9d8GvCE5Uz4WdvbDu8zJaJy8atrS8guuyGA0bVbix4c1znuh3\nsFNLJAiuRrxfqozL+tXA2mP3SXxYssLAFMcJXIotcQKBgQDf5CzYeav1h3yNupFV\neETYJVJlTj16K4FvuO2ZH6+Kqfeinq0Qm4G1DC9EarSZn4fiRDUAWrQ5uIIN8pFC\nPwx19u9iAHBnEsFP19bAylw1mGtBZdK1oV9ov2c+BGRQbk3QUrdz2Y0/SE79okmZ\nbiZF/eAHOorUVPb4iAlAIuBE/wKBgQDbBKqyt5Apx53a4ilWRUNIa4Z2TrBxFlpd\nw4NjNMy7eCuz38uAcI5piElnr7+cQ0dI65YvuqrJJMtJNWwDTwWZXG1nN60oD9qy\n8ep/INDfaUTovaPiXMTedlkJqaRhWttHwFDU8Fnz7Zv2CpugQb8YnkD5R/XNjtFu\ny7PC8ejzqQKBgCF51Xa8ooiArI/ocGiOJgUHd41sKGcG8ECLLwNxKGccSMmI3imY\nhslSPBMHvV8m6kNbnW0jIsVqoA+D0FJOaQeOV3aYyDWxKTRN+m8zEpx04LyTg/Di\nYwifbclpELKx+3KFm6Z3xdXLcvwbctO9E33tmryZ9T4QQikg9fkf/dZzAoGAd0d3\nX5WxIc/hHJAHS0C1f/9vX4dDeJNf66jLKYBb781mn7PGNNEX/kmHEL0acZQCgqgr\nRxs2YA112Q0LIlIrDnbT7l7YIvVfeg1eVJYeq029hbOiSWmUnkN+AlEtgQfmXJFU\ndGPh2YMSaVElqIWl+VZWtGyIZcbeMKUn5YeyAuECgYApm844OoiX3aAhTJ3J8gRj\nrgzb0xZIowh+fSrqhtVHkb9mDMMWUzCMsQTES+s3m6W9tUaRIxT0eApwNRQ4upao\n0x70Q+gNBxsMV/xnp/VUaNnnS7jy+9hra/OeB+44Lj93a8yMmdsW+jXkbrb2j7en\nobEukT9qHa4wrFuWL3tnYw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "bq-music-rec@musiccataloginghelper.iam.gserviceaccount.com",
+  "client_id": "107477079802354658095",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/bq-music-rec%40musiccataloginghelper.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
