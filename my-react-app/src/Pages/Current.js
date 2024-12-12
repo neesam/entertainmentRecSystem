@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import Album from "../FetchingFunctionality/Album";
-import Show from '../FetchingFunctionality/Show';
-import Film from "../FetchingFunctionality/Film";
+import Album from "../Components/Album";
+import Show from '../Components/Show';
+import Film from "../Components/Film";
 import renderChart from "../Components/Chart";
-import GetAttributesForRYMAlbum from "../FetchingFunctionality/Attributes";
+// import GetAttributesForRYMAlbum from "../FetchingFunctionality/Attributes";
 import NavBar from "../Components/Nav";
 
 import Button from 'react-bootstrap/Button';

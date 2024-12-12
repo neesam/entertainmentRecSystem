@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import React, {useState} from "react";
 
-import EntCard from '../Components/Card';
+import EntCard from './Card';
 
 import randomColor from '../Helper/randomColor';
 
@@ -21,12 +21,32 @@ const Album = ({isStaticMode}) => {
     const [tablesUsed, setTablesUsed] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
 
-    const tables = [
+    const tables1 = [
         'musicTable1', 
         'musicTable2', 
         'musicTable3', 
         'musicTable4', 
-        'musicTable5']
+        'musicTable5'
+    ]
+
+    const tables2 = [
+        'album_allgenres',
+        'album_brokentransmission',
+        'album_createdbyrejection',
+        'album_emo',
+        'album_emoautumn',
+        'album_greatscene',
+        'album_guysfavemoalbums',
+        'album_hopelessrecords',
+        'album_indiepop',
+        'album_magicsheet',
+        'album_moenieandkitchie',
+        'album_popalbums',
+        'album_risecore',
+        'album_rymrecs',
+        'album_tolisten',
+        'album_vaporwave'
+    ]
 
 
     useEffect(() => {
@@ -105,7 +125,7 @@ const Album = ({isStaticMode}) => {
 
             let localTablesUsed = [...tablesUsed];
 
-            if (localTablesUsed.length === 6) {
+            if (localTablesUsed.length === 17) {
                 localTablesUsed = []
                 setTablesUsed([])
             }
@@ -114,7 +134,7 @@ const Album = ({isStaticMode}) => {
 
             while (!tableUsed) {
 
-                const response = await fetch('http://localhost:5001/api/whichMusicTable');
+                const response = await fetch('http://localhost:5001/api/whichMusicTable2');
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch whichTable');
@@ -166,7 +186,7 @@ const Album = ({isStaticMode}) => {
     return (
         <>
         <EntCard 
-            attributes={{ color: isStaticMode ? backgroundColor : 'white', title: album, type: 'album', tables: tables }}
+            attributes={{ color: isStaticMode ? backgroundColor : 'white', title: album, type: 'album', tables: tables2 }}
             clickFunction={getAlbum}
             submitForm={getFromSpecificTable}
          />

@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import React, {useState} from "react";
 
-import EntCard from '../Components/Card';
+import EntCard from './Card';
 
 import randomColor from '../Helper/randomColor';
 
