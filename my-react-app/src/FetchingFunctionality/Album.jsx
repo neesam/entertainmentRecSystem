@@ -21,13 +21,6 @@ const Album = ({isStaticMode}) => {
     const [tablesUsed, setTablesUsed] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
 
-    const tables = [
-        'musicTable1', 
-        'musicTable2', 
-        'musicTable3', 
-        'musicTable4', 
-        'musicTable5']
-
 
     useEffect(() => {
 
@@ -146,29 +139,11 @@ const Album = ({isStaticMode}) => {
         fetchWhichTable();
     }
 
-    const getFromSpecificTable = async (specificTable) => {
-        const response = await fetch(`http://localhost:5001/api/${specificTable}`)
-            if (!response.ok) {
-                throw new Error(`Failed to fetch details for ${specificTable}`);
-            }
-            const data = await response.json()
-
-            setAlbum(data[0]['string_field_0'])
-            localStorage.setItem('album', data[0]['string_field_0'])
-
-            // Logic to change background on each button press
-
-            const bgColor = randomColor()
-            setBackgroundColor(bgColor)
-            localStorage.setItem('albumBackgroundColor', bgColor)
-    }
-
     return (
         <>
         <EntCard 
-            attributes={{ color: isStaticMode ? backgroundColor : 'white', title: album, type: 'album', tables: tables }}
+            attributes={{ color: isStaticMode ? backgroundColor : 'white', title: album, type: 'album' }}
             clickFunction={getAlbum}
-            submitForm={getFromSpecificTable}
          />
         {/* <a
             href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}

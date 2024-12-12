@@ -14,15 +14,6 @@ const Film = ({isStaticMode}) => {
     const [tablesUsed, setTablesUsed] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
 
-    const tables = [
-        'film_ebert',
-        'film_imdb250',
-        'filmrecs',
-        'film_towatch',
-        'film_visualhypnagogia',
-        'film_rymtop1500'
-    ]
-
     useEffect(() => {
         const filmValue = localStorage.getItem('film')
         setFilm(filmValue)
@@ -115,30 +106,11 @@ const Film = ({isStaticMode}) => {
     //     }
     //     getFilm()
     // }
-
-    const getFromSpecificTable = async (specificTable) => {
-        const response = await fetch(`http://localhost:5001/api/${specificTable}`)
-            if (!response.ok) {
-                throw new Error(`Failed to fetch details for ${specificTable}`);
-            }
-            const data = await response.json()
-
-            setFilm(data[0]['string_field_0'])
-            localStorage.setItem('film', data[0]['string_field_0'])
-
-            // Logic to change background on each button press
-
-            const bgColor = randomColor()
-            setBackgroundColor(bgColor)
-            localStorage.setItem('filmBackgroundColor', bgColor)
-    }
-
     
     return (
         <EntCard 
-            attributes={{ color: isStaticMode ? backgroundColor : 'pink', title: film, type: 'film', tables: tables }}
+            attributes={{ color: isStaticMode ? backgroundColor : 'pink', title: film, type: 'film' }}
             clickFunction={getFilm}
-            submitForm={getFromSpecificTable}
             // deleteFunction={deleteFilm}
          />
     )

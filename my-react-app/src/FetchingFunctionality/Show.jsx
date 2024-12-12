@@ -13,7 +13,6 @@ const Show = ({isStaticMode}) => {
     const [show, setShow] = useState()
     const [showID, setShowID] = useState('')
     const [backgroundColor, setBackgroundColor] = useState('')
-    const tables = ['shows']
 
 
     useEffect(() => {
@@ -60,10 +59,10 @@ const Show = ({isStaticMode}) => {
 
     return (
         <EntCard 
-            attributes={{ color: isStaticMode ? backgroundColor : 'skyblue', title: show, type: 'show', tables: tables }}
+            attributes={{ color: isStaticMode ? backgroundColor : 'skyblue', title: show, type: 'show' }}
             clickFunction={fetchShow}
             deleteFunction={deleteShow}
-        />
+         />
     )
 }
 
