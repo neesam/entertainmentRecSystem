@@ -150,7 +150,7 @@ app.delete('/api/albums/:id/:whichTable', async (req, res) => {
     // Construct the query to delete the row
     const query = `
         DELETE FROM \`musiccataloginghelper.music_tables.${whichTable}\`
-        WHERE int64_field_1 = @albumID
+        WHERE int64_field_1  = @albumID
     `;
 
     try {
