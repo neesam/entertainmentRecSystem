@@ -1,6 +1,4 @@
 import render, {useEffect} from 'react'
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
 import React, {useState} from "react";
 
 import EntCard from './Card';
@@ -10,10 +8,17 @@ import randomColor from '../Helper/randomColor';
 
 const Show = ({isStaticMode}) => {
 
+    const [whichTable, setWhichTable] = useState('')
     const [show, setShow] = useState()
+    const [tablesUsed, setTablesUsed] = useState([])
     const [showID, setShowID] = useState('')
     const [backgroundColor, setBackgroundColor] = useState('')
-    const tables = ['shows']
+
+    const tables = [
+        'shows',
+        'anime_classic',
+        'anime_other'
+    ]
 
 
     useEffect(() => {
@@ -24,22 +29,93 @@ const Show = ({isStaticMode}) => {
         setBackgroundColor(showBackgroundColor)
     }, []);
 
-    const fetchShow = async () => {
-        const response = await fetch(`http://localhost:5001/api/shows`)
-        if (!response.ok) {
-            throw new Error(`Failed to fetch details for shows`);
+    const getShow = async () => {
+
+        // Function to fetch actual show
+
+        const fetchShowFromWhichTable = async (whichTable) => {
+            const response = await fetch(`http://localhost:5001/api/${whichTable}`)
+            if (!response.ok) {
+                throw new Error(`Failed to fetch details for ${whichTable}`);
+            }
+            const data = await response.json()
+
+            console.log(data)
+
+            setShow(data[0]['string_field_0'])
+            localStorage.setItem('show', data[0]['string_field_0'])
+
+            // Logic to change background on each button press
+
+            const bgColor = randomColor()
+            setBackgroundColor(bgColor)
+            localStorage.setItem('albumBackgroundColor', bgColor)
         }
-        const data = await response.json()
 
-        setShow(data[0]['string_field_0'])
-        setShowID(data[0]['int64_field_1'])
-        localStorage.setItem('show', data[0]['string_field_0'])
+        // Function to retrieve specific table
 
-        const bgColor = randomColor()
+        const fetchWhichTable = async () => {
 
-        setBackgroundColor(bgColor)
-        localStorage.setItem('showBackgroundColor', bgColor)
+            let localTablesUsed = [...tablesUsed];
 
+            if (localTablesUsed.length === 3) {
+                localTablesUsed = []
+                setTablesUsed([])
+            }
+
+            let tableUsed = false
+
+            while (!tableUsed) {
+
+                const response = await fetch('http://localhost:5001/api/whichShowTable');
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch whichTable');
+                }
+
+                const data = await response.json()
+                const fetchedTable = data[0]['string_field_0']
+                console.log(fetchedTable)
+
+                if (!localTablesUsed.includes(fetchedTable)) {
+
+                    tableUsed = true
+
+                    setWhichTable(fetchedTable)
+
+                    localTablesUsed.push(fetchedTable);
+                    setTablesUsed(localTablesUsed);
+                    console.log('After update:', [...tablesUsed, fetchedTable]);
+
+                    localStorage.setItem('whichShowTable', fetchedTable)
+
+                    if (data.length > 0) {
+                        fetchShowFromWhichTable(fetchedTable); // Assuming data is an array and we're using the first item
+                    }
+                }
+            }
+        }
+
+        fetchWhichTable();
+    }
+
+    const getFromSpecificTable = async (specificTable) => {
+        const response = await fetch(`http://localhost:5001/api/${specificTable}`)
+            if (!response.ok) {
+                throw new Error(`Failed to fetch details for ${specificTable}`);
+            }
+            const data = await response.json()
+
+            console.log(data)
+
+            setShow(data[0]['string_field_0'])
+            localStorage.setItem('show', data[0]['string_field_0'])
+
+            // Logic to change background on each button press
+
+            const bgColor = randomColor()
+            setBackgroundColor(bgColor)
+            localStorage.setItem('showBackgroundColor', bgColor)
     }
 
     const deleteShow = async () => {
@@ -55,14 +131,15 @@ const Show = ({isStaticMode}) => {
         } catch (err) {
             console.log(err.message);
         }
-        fetchShow()
+        getShow()
     }
 
     return (
         <EntCard 
             attributes={{ color: isStaticMode ? backgroundColor : 'skyblue', title: show, type: 'show', tables: tables }}
-            clickFunction={fetchShow}
+            clickFunction={getShow}
             deleteFunction={deleteShow}
+            submitForm={getFromSpecificTable}
         />
     )
 }

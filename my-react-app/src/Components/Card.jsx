@@ -29,7 +29,7 @@ const EntCard = ({ clickFunction, deleteFunction, attributes, submitForm }) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '33.35vh',
+            height: '25vh',
             backgroundColor: attributes.color 
         }}>
             <Card style={{
@@ -40,7 +40,7 @@ const EntCard = ({ clickFunction, deleteFunction, attributes, submitForm }) => {
                 flexDirection: 'column',
                 position: 'relative' 
             }}>
-                {attributes.type !== 'show' && <Button
+                <Button
                     style={{
                         position: 'absolute',
                         top: '10px',
@@ -50,7 +50,7 @@ const EntCard = ({ clickFunction, deleteFunction, attributes, submitForm }) => {
                     variant="outline-secondary"
                     onClick={handleModalOpen}>
                     &#9998; 
-                </Button>}
+                </Button>
 
                 <Card.Body>
                     <Card.Title>{attributes.title}</Card.Title>

@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import Album from "../Components/Album";
 import Show from '../Components/Show';
 import Film from "../Components/Film";
+import Book from '../Components/Book';
 import renderChart from "../Components/Chart";
 // import GetAttributesForRYMAlbum from "../FetchingFunctionality/Attributes";
 import NavBar from "../Components/Nav";
@@ -52,6 +53,7 @@ const Current = () => {
         <Album isStaticMode={staticMode}/>
         <Film isStaticMode={staticMode}/>
         <Show isStaticMode={staticMode}/>
+        <Book isStaticMode={staticMode}/>
       </>
   );
 };
