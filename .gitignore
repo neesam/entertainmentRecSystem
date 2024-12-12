@@ -1,2 +1,3 @@
 node_modules
 musicCatalogingHelper-*.json
+.env
