@@ -21,8 +21,6 @@ const Album = ({isStaticMode}) => {
     const [tablesUsed, setTablesUsed] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
 
-<<<<<<< HEAD:my-react-app/src/FetchingFunctionality/Album.jsx
-=======
     const tables1 = [
         'musicTable1', 
         'musicTable2', 
@@ -50,7 +48,6 @@ const Album = ({isStaticMode}) => {
         'album_vaporwave'
     ]
 
->>>>>>> a0a531296ec7ec1e405ecaaaa2b2f1978d59f50b:my-react-app/src/Components/Album.jsx
 
     useEffect(() => {
 
@@ -176,12 +173,6 @@ const Album = ({isStaticMode}) => {
         fetchWhichTable();
     }
 
-<<<<<<< HEAD:my-react-app/src/FetchingFunctionality/Album.jsx
-    return (
-        <>
-        <EntCard 
-            attributes={{ color: isStaticMode ? backgroundColor : 'white', title: album, type: 'album' }}
-=======
     const getFromSpecificTable = async (specificTable) => {
         const response = await fetch(`http://localhost:5001/api/${specificTable}`)
             if (!response.ok) {
@@ -210,8 +201,8 @@ const Album = ({isStaticMode}) => {
         <>
         <EntCard 
             attributes={{ color: isStaticMode ? backgroundColor : 'white', title: album, type: 'album', tables: tables2 }}
->>>>>>> a0a531296ec7ec1e405ecaaaa2b2f1978d59f50b:my-react-app/src/Components/Album.jsx
             clickFunction={getAlbum}
+            submitForm={getFromSpecificTable}
          />
         {/* <a
             href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}
