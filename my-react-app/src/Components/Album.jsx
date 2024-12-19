@@ -38,6 +38,7 @@ const Album = ({isStaticMode}) => {
         'album_greatscene',
         'album_guysfavemoalbums',
         'album_hopelessrecords',
+        'album_inCirculation',
         'album_indiepop',
         'album_magicsheet',
         'album_moenieandkitchie',
@@ -73,7 +74,7 @@ const Album = ({isStaticMode}) => {
         const albumValue = localStorage.getItem('album')
         setAlbum(albumValue)
 
-        const whichTableValue = localStorage.getItem('whichTable')
+        const whichTableValue = localStorage.getItem('whichMusicTable')
         setWhichTable(whichTableValue)
 
         const albumBackgroundColor = localStorage.getItem('albumBackgroundColor');
@@ -197,12 +198,39 @@ const Album = ({isStaticMode}) => {
             localStorage.setItem('albumBackgroundColor', bgColor)
     }
 
+    // const deleteAlbum = async () => {
+    //     try {
+    //         const regex = /^[^-]+/;
+    //         const albumToDelete = album.includes('-') ? album.match(regex)?.[0] : album;
+    //         const encodedTitle = encodeURIComponent(albumToDelete.trim());
+    
+    //         console.log(`Attempting to delete album: ${encodedTitle} from table: ${whichTable}`);
+    
+    //         const response = await fetch(`/api/albums/${encodedTitle}/${whichTable}`, {
+    //             method: 'DELETE',
+    //             headers: { 'Content-type': 'application/json' },
+    //         });
+    
+    //         if (!response.ok) {
+    //             const errorData = await response.json();
+    //             throw new Error(`Delete failed: ${errorData.message || 'Unknown error'}`);
+    //         }
+    
+    //         console.log(await response.json());
+    //         console.log('Album deleted successfully.');
+    //     } catch (error) {
+    //         console.error('Error during deletion:', error.message);
+    //     }
+    // };
+    
+
     return (
         <>
         <EntCard 
             attributes={{ color: isStaticMode ? backgroundColor : 'white', title: album, type: 'album', tables: tables2 }}
             clickFunction={getAlbum}
             submitForm={getFromSpecificTable}
+            // deleteFunction={deleteAlbum}
          />
         {/* <a
             href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}

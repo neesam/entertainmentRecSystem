@@ -166,24 +166,24 @@ app.get('/api/wantToListen', async (req, res) => {
     }
 });
 
-app.delete('/api/albums/:id/:whichTable', async (req, res) => {
-    const albumID = parseInt(req.params.id);
+app.delete('/api/albums/:title/:whichTable', async (req, res) => {
+    const title = req.params.title;
     const whichTable = req.params.whichTable;
 
-    console.log(`Received DELETE request for id: ${albumID} from table: ${whichTable}`);
+    console.log(`Received DELETE request for id: ${title} from table: ${whichTable}`);
 
 
     // Construct the query to delete the row
     const query = `
         DELETE FROM \`musiccataloginghelper.music_tables.${whichTable}\`
-        WHERE int64_field_1  = @albumID
+        WHERE string_field_0  = @title
     `;
 
     try {
         // Run the query
         const options = {
             query,
-            params: { albumID },
+            params: { title },
         };
         const [job] = await bigquery.createQueryJob(options);
         console.log(`Job ${job.id} started.`);
@@ -309,6 +309,19 @@ app.get('/api/album_hopelessrecords', async (req, res) => {
     }
 });
 
+app.get('/api/album_incirculation', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_inCirculation order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.get('/api/album_indiepop', async (req, res) => {
     const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_indiepop order by rand() limit 1'
 
@@ -411,6 +424,12 @@ app.get('/api/album_vaporwave', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+// album deletion
+
+app.delete('/api/:whichTable/:title', async (req, res) => {
+
+})
 
 // film
 
