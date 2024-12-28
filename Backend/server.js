@@ -231,6 +231,19 @@ app.get('/api/album_brokentransmission', async (req, res) => {
     }
 });
 
+app.get('/api/artist_classicalComposer', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.artist_classicalComposer order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.get('/api/album_createdbyrejection', async (req, res) => {
     const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_createdbyrejection order by rand() limit 1'
 
