@@ -218,6 +218,19 @@ app.get('/api/album_allgenres', async (req, res) => {
     }
 });
 
+app.get('/api/album_bedroomAOR', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_bedroomAOR order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.get('/api/album_brokentransmission', async (req, res) => {
     const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_brokentransmission order by rand() limit 1'
 

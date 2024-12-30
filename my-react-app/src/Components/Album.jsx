@@ -31,6 +31,7 @@ const Album = ({isStaticMode}) => {
 
     const tables2 = [
         'album_allgenres',
+        'album_bedroomAOR',
         'album_brokentransmission',
         'artist_classicalComposer',
         'album_createdbyrejection',
