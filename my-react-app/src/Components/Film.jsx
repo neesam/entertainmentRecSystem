@@ -27,6 +27,9 @@ const Film = ({isStaticMode}) => {
         const filmValue = localStorage.getItem('film')
         setFilm(filmValue)
 
+        const filmIDValue = localStorage.getItem('filmID')
+        setFilmID(filmIDValue)
+
         const whichTableValue = localStorage.getItem('whichFilmTable')
         setWhichTable(whichTableValue)
 
@@ -45,8 +48,9 @@ const Film = ({isStaticMode}) => {
             console.log(data)
 
             setFilm(data[0]['string_field_0'])
-            setFilmID(data[0]['int64_field_1'])
+            setFilmID(data[0]['id'])
             localStorage.setItem('film', data[0]['string_field_0'])
+            localStorage.setItem('filmID', data[0]['id'])
 
             const bgColor = randomColor()
     
@@ -100,21 +104,27 @@ const Film = ({isStaticMode}) => {
         fetchWhichTable();
     }
 
-    // const deleteFilm = async () => {
-    //     console.log(filmID)
-    //     console.log(`Requesting DELETE for film ID: ${filmID}`);
-    //     try {
-    //         const response = await fetch(`http://localhost:5001/api/film/${filmID}/${whichTable}`, {
-    //             method: 'DELETE'
-    //         })
+    const deleteFilm = async () => {
+        try {
+        
+            const response = await fetch(`http://localhost:5001/api/film/${filmID}/${whichTable}`, {
+                method: 'DELETE',
+                headers: { 'Content-type': 'application/json' },
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Delete failed: ${errorData.message || 'Unknown error'}`);
+            }
 
-    //         const data = await response.json()
-    //         console.log(data.message)
-    //     } catch (err) {
-    //         console.log(err.message);
-    //     }
-    //     getFilm()
-    // }
+            console.log(await response.json());
+            console.log('Film deleted successfully.');
+        } catch (error) {
+            console.error('Error during deletion:', error.message);
+        }
+
+        getFilm()
+    };
 
     const getFromSpecificTable = async (specificTable) => {
         const response = await fetch(`http://localhost:5001/api/${specificTable}`)
@@ -124,7 +134,9 @@ const Film = ({isStaticMode}) => {
             const data = await response.json()
 
             setFilm(data[0]['string_field_0'])
+            setFilmID(data[0]['id'])
             localStorage.setItem('film', data[0]['string_field_0'])
+            localStorage.setItem('filmID', data[0]['id'])
 
             // Logic to change background on each button press
 
@@ -136,11 +148,11 @@ const Film = ({isStaticMode}) => {
     
     return (
         <EntCard 
-            attributes={{ color: isStaticMode ? backgroundColor : 'pink', title: film, type: 'film', tables: tables }}
+            attributes={{ color: isStaticMode ? backgroundColor : 'pink', title: film, type: 'film', tables: tables, table: whichTable }}
             clickFunction={getFilm}
             submitForm={getFromSpecificTable}
-            // deleteFunction={deleteFilm}
-         />
+            deleteFunction={deleteFilm}
+        />
     )
 }
 

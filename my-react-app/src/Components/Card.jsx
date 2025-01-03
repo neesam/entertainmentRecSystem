@@ -54,6 +54,7 @@ const EntCard = ({ clickFunction, deleteFunction, attributes, submitForm }) => {
 
                 <Card.Body>
                     <Card.Title>{attributes.title}</Card.Title>
+                    <Card.Title style={{fontSize: '10px'}}>{attributes.table}</Card.Title>
                 </Card.Body>
                 <div>
                     <Button
