@@ -86,6 +86,20 @@ app.get('/api/whichShowTable', async (req, res) => {
     }
 });
 
+app.get('/api/whichBookTable', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.book_tables.whichBookTable order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+
 // Album/artist tables 1
 
 app.get('/api/musicTable1', async (req, res) => {
@@ -669,6 +683,43 @@ app.get('/api/penguin_modern', async (req, res) => {
         res.status(500).send('Server Error')
     }
 })
+
+app.delete('/api/books/:id/:whichTable', async (req, res) => {
+    const id = parseInt(req.params.id);
+    const whichTable = req.params.whichTable;
+
+    console.log(`Received DELETE request for id: ${id} from table: ${whichTable}`);
+
+
+    // Construct the query to delete the row
+    const query = `
+        DELETE FROM \`musiccataloginghelper.book_tables.${whichTable}\`
+        WHERE id  = @id
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { id },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Film not found');
+        }
+
+        res.status(200).send({ message: 'Book deleted successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+});
 
 // server listening function
 

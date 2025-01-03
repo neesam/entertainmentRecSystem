@@ -1,4 +1,4 @@
-import render, {useEffect} from 'react'
+import {useEffect} from 'react'
 import React, {useState} from "react";
 
 import EntCard from './Card';
@@ -136,7 +136,7 @@ const Show = ({isStaticMode}) => {
 
     return (
         <EntCard 
-            attributes={{ color: isStaticMode ? backgroundColor : 'skyblue', title: show, type: 'show', tables: tables }}
+            attributes={{ color: isStaticMode ? backgroundColor : 'skyblue', title: show, type: 'show', tables: tables, table: whichTable }}
             clickFunction={getShow}
             deleteFunction={deleteShow}
             submitForm={getFromSpecificTable}

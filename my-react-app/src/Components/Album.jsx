@@ -1,6 +1,4 @@
-import render, {useEffect} from 'react'
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
+import {useEffect} from 'react'
 import React, {useState} from "react";
 
 import EntCard from './Card';
