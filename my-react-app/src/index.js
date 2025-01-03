@@ -3,24 +3,14 @@ import ReactDOM from 'react-dom/client';
 import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import './index.css';
 import Current from './Pages/Current';
-import Compare from "./Pages/Compare";
 import reportWebVitals from './Tests/reportWebVitals';
-import Budget from "./Pages/Budget";
 import './Style/App.css';
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <Current/>
-    },
-    {
-        path: "/compare",
-        element: <Compare/>
-    },
-    // {
-    //     path: "/budget",
-    //     element: <Budget/>
-    // },
+    }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
