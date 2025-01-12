@@ -547,6 +547,19 @@ app.get('/api/film_rymtop1500', async (req, res) => {
     }
 });
 
+app.get('/api/film_criterion', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.film_tables.film_criterion order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.delete('/api/film/:id/:whichTable', async (req, res) => {
     const id = parseInt(req.params.id);
     const whichTable = req.params.whichTable;

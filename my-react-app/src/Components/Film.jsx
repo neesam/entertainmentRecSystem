@@ -18,7 +18,8 @@ const Film = ({isStaticMode}) => {
         'filmrecs',
         'film_towatch',
         'film_visualhypnagogia',
-        'film_rymtop1500'
+        'film_rymtop1500',
+        'film_criterion'
     ]
 
     useEffect(() => {

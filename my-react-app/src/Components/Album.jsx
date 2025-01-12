@@ -166,7 +166,11 @@ const Album = ({isStaticMode}) => {
             console.log(data)
 
             setAlbum(data[0]['string_field_0'])
+            setAlbumID(data[0]['id'])
+            setWhichTable(specificTable)
             localStorage.setItem('album', data[0]['string_field_0'])
+            localStorage.setItem('albumID', albumID)
+            localStorage.setItem('whichMusicTable', specificTable)
 
             // Logic to change background on each button press
 
