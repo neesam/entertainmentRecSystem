@@ -428,6 +428,69 @@ app.get('/api/album_vaporwave', async (req, res) => {
     }
 });
 
+app.get('/api/album_waterloggedEars', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_waterloggedEars order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_soundsofspotify', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_soundsofspotify order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+// inCirculation addition
+
+app.post('/api/addToCirculation/:album', async (req, res) => {
+    const album = req.params.album;
+
+    console.log(album)
+
+
+    const query = `
+        INSERT INTO \`musiccataloginghelper.musicTables.album_inCirculation\`
+        (string_field_0, id) VALUES (@album, GENERATE_UUID())
+    `
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { album },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.album} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Album not found');
+        }
+
+        res.status(200).send({ message: 'Album added successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
 // album deletion
 
 app.delete('/api/albums/:id/:whichTable', async (req, res) => {

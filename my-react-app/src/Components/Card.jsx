@@ -8,7 +8,7 @@ import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
 
 
-const EntCard = ({ clickFunction, deleteFunction, attributes, submitForm }) => {
+const EntCard = ({ clickFunction, deleteFunction, addToCirculation, attributes, submitForm }) => {
     const [showModal, setShowModal] = useState(false);
     const [selectedOption, setSelectedOption] = useState(""); // State for dropdown selection
 
@@ -68,6 +68,22 @@ const EntCard = ({ clickFunction, deleteFunction, attributes, submitForm }) => {
                         onClick={deleteFunction}>
                         Delete {attributes.type}
                     </Button>
+                    {attributes.inCirculation === true ? (
+                        <Button
+                            style={{ marginRight: '5%', marginBottom: '3%' }}
+                            variant='danger'
+                            onClick={deleteFunction}>
+                            Delete from inCirculation
+                        </Button>
+                    ) : <></>}
+                    {attributes.type === 'album' ? (
+                        <Button
+                        style={{ marginRight: '5%', marginBottom: '3%' }}
+                        variant='light'
+                        onClick={addToCirculation}>
+                        Add to inCirculation
+                    </Button>
+                    ) : <></>}
                 </div>
             </Card>
 

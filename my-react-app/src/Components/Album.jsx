@@ -10,6 +10,7 @@ const Album = ({isStaticMode}) => {
     const [whichTable, setWhichTable] = useState('')
     const [album, setAlbum] = useState('')
     const [albumID, setAlbumID] = useState('')
+    const [inCirculation, setInCirculation] = useState(false)
     const [tablesUsed, setTablesUsed] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
 
@@ -39,8 +40,10 @@ const Album = ({isStaticMode}) => {
         'album_popalbums',
         'album_risecore',
         'album_rymrecs',
+        'album_soundsofspotify',
         'album_tolisten',
-        'album_vaporwave'
+        'album_vaporwave',
+        'album_waterloggedEars'
     ]
 
 
@@ -99,6 +102,7 @@ const Album = ({isStaticMode}) => {
 
             setAlbum(data[0]['string_field_0'])
             setAlbumID(data[0]['id'])
+            setInCirculation(false)
             localStorage.setItem('album', data[0]['string_field_0'])
             localStorage.setItem('albumID', data[0]['id'])
 
@@ -115,7 +119,7 @@ const Album = ({isStaticMode}) => {
 
             let localTablesUsed = [...tablesUsed];
 
-            if (localTablesUsed.length === 17) {
+            if (localTablesUsed.length === 20) {
                 localTablesUsed = []
                 setTablesUsed([])
             }
@@ -200,15 +204,37 @@ const Album = ({isStaticMode}) => {
 
         getAlbum()
     };
+
+    const addToCirculation = async () => {
+        try {
+            const response = await fetch(`http://localhost:5001/api/addToCirculation/${album}`, {
+                method: 'POST',
+                headers: { 'Content-type': 'application/json' },
+            })
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Post failed: ${errorData.message || 'Unknown error'}`);
+            }
+
+            console.log(await response.json());
+            console.log('Album added successfully.');
+
+            setInCirculation(true)
+        } catch (error) {
+            console.error('Error during deletion:', error.message);
+        }
+    }
     
 
     return (
         <>
         <EntCard 
-            attributes={{ color: isStaticMode ? backgroundColor : 'white', title: album, type: 'album', tables: tables2, table: whichTable }}
+            attributes={{ color: isStaticMode ? backgroundColor : 'white', title: album, type: 'album', tables: tables2, table: whichTable, inCirculation: inCirculation }}
             clickFunction={getAlbum}
             submitForm={getFromSpecificTable}
             deleteFunction={deleteAlbum}
+            addToCirculation={addToCirculation}
          />
         {/* <a
             href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}
