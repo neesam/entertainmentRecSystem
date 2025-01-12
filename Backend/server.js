@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const {spawn} = require('child_process');
 const { Pool } = require('pg');
 const { BigQuery } = require('@google-cloud/bigquery');
 
@@ -31,6 +32,28 @@ const bigquery = new BigQuery({
 //     password: 'root',
 //     port: 5432,
 // });
+
+// Run metadata pipeline
+
+app.get('/api/pipeline', async (req, res) => {
+    var dataToSend;
+
+    const python = spawn('python3', ['/Users/anees/entertainmentRecSystem/Backend/script1.py']);
+    python.stdout.on('data', function (data) {
+        console.log('Pipe data from python script ...');
+        dataToSend = data.toString();
+    })
+
+    python.on('close', (code) => {
+        console.log(`child process close all stdio with code ${code}`);
+        res.send(dataToSend);
+    })
+
+    python.on('error', (err) => {
+        console.error('Failed to start Python process:', err);
+        res.status(500).send({ message: 'Failed to execute Python script.' });
+    });
+})
 
 // whichTable
 
@@ -428,69 +451,6 @@ app.get('/api/album_vaporwave', async (req, res) => {
     }
 });
 
-app.get('/api/album_waterloggedEars', async (req, res) => {
-    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_waterloggedEars order by rand() limit 1'
-
-    try {
-        const [rows] = await bigquery.query({ query: sqlQuery });
-        res.json(rows)
-        console.log(rows)
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/album_soundsofspotify', async (req, res) => {
-    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_soundsofspotify order by rand() limit 1'
-
-    try {
-        const [rows] = await bigquery.query({ query: sqlQuery });
-        res.json(rows)
-        console.log(rows)
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-// inCirculation addition
-
-app.post('/api/addToCirculation/:album', async (req, res) => {
-    const album = req.params.album;
-
-    console.log(album)
-
-
-    const query = `
-        INSERT INTO \`musiccataloginghelper.musicTables.album_inCirculation\`
-        (string_field_0, id) VALUES (@album, GENERATE_UUID())
-    `
-
-    try {
-        // Run the query
-        const options = {
-            query,
-            params: { album },
-        };
-        const [job] = await bigquery.createQueryJob(options);
-        console.log(`Job ${job.album} started.`);
-
-        // Wait for the query to finish
-        const [rows] = await job.getQueryResults();
-        console.log('Rows affected:', rows);
-
-        if (rows.length === 0) {
-            return res.status(404).send('Album not found');
-        }
-
-        res.status(200).send({ message: 'Album added successfully' });
-    } catch (err) {
-        console.error('Error:', err.message);
-        res.status(500).send('Server Error');
-    }
-})
-
 // album deletion
 
 app.delete('/api/albums/:id/:whichTable', async (req, res) => {
@@ -599,19 +559,6 @@ app.get('/api/filmrecs', async (req, res) => {
 
 app.get('/api/film_rymtop1500', async (req, res) => {
     const sqlQuery = 'select * from musiccataloginghelper.film_tables.film_rymtop1500 order by rand() limit 1'
-
-    try {
-        const [rows] = await bigquery.query({ query: sqlQuery });
-        res.json(rows)
-        console.log(rows)
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
-
-app.get('/api/film_criterion', async (req, res) => {
-    const sqlQuery = 'select * from musiccataloginghelper.film_tables.film_criterion order by rand() limit 1'
 
     try {
         const [rows] = await bigquery.query({ query: sqlQuery });
