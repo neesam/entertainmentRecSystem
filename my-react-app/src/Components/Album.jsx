@@ -1,5 +1,6 @@
 import {useEffect} from 'react'
 import React, {useState} from "react";
+import { ToastContainer, toast } from 'react-toastify';
 
 import EntCard from './Card';
 
@@ -10,7 +11,8 @@ const Album = ({isStaticMode}) => {
     const [whichTable, setWhichTable] = useState('')
     const [album, setAlbum] = useState('')
     const [albumID, setAlbumID] = useState('')
-    const [inCirculation, setInCirculation] = useState(false)
+    const [inCirculation, setInCirculation] = useState('')
+    const [originalTable, setOriginalTable] = useState('')
     const [tablesUsed, setTablesUsed] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
 
@@ -74,6 +76,12 @@ const Album = ({isStaticMode}) => {
         const albumIDValue = localStorage.getItem('albumID')
         setAlbumID(albumIDValue)
 
+        const inCirculationValue = localStorage.getItem('in_circulation')
+        setInCirculation(inCirculationValue)
+
+        const originalTableValue = localStorage.getItem('original_album_table')
+        setOriginalTable(originalTableValue)
+
         const whichTableValue = localStorage.getItem('whichMusicTable')
         setWhichTable(whichTableValue)
 
@@ -102,9 +110,10 @@ const Album = ({isStaticMode}) => {
 
             setAlbum(data[0]['string_field_0'])
             setAlbumID(data[0]['id'])
-            setInCirculation(false)
             localStorage.setItem('album', data[0]['string_field_0'])
             localStorage.setItem('albumID', data[0]['id'])
+            setInCirculation('false')
+            localStorage.setItem('in_circulation', 'false')
 
             // Logic to change background on each button press
 
@@ -176,6 +185,22 @@ const Album = ({isStaticMode}) => {
             localStorage.setItem('albumID', albumID)
             localStorage.setItem('whichMusicTable', specificTable)
 
+            if(data[0]['in_circulation']) {
+                setInCirculation(data[0]['in_circulation'])
+                localStorage.setItem('in_circulation', data[0]['in_circulation'])
+            } else {
+                setInCirculation(null)
+                localStorage.setItem('in_circulation', null)
+            }
+
+            if(data[0]['original_table']) {
+                setOriginalTable(data[0]['original_table'])
+                localStorage.setItem('original_album_table', data[0]['original_table'])
+            } else {
+                setOriginalTable(null)
+                localStorage.setItem('original_album_table', null)
+            }
+
             // Logic to change background on each button press
 
             const bgColor = randomColor()
@@ -184,30 +209,58 @@ const Album = ({isStaticMode}) => {
     }
 
     const deleteAlbum = async () => {
-        try {
+        if(inCirculation === null) {
+            try {
+                const response = await fetch(`http://localhost:5001/api/albums/${albumID}/${whichTable}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-type': 'application/json' },
+                });
         
-            const response = await fetch(`http://localhost:5001/api/albums/${albumID}/${whichTable}`, {
-                method: 'DELETE',
-                headers: { 'Content-type': 'application/json' },
-            });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Delete failed: ${errorData.message || 'Unknown error'}`);
+                }
     
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`Delete failed: ${errorData.message || 'Unknown error'}`);
-            }
+                console.log(await response.json());
+                console.log('Album deleted successfully.');
+                
+                getAlbum()
 
-            console.log(await response.json());
-            console.log('Album deleted successfully.');
-        } catch (error) {
-            console.error('Error during deletion:', error.message);
+            } catch (error) {
+                console.error('Error during deletion:', error.message);
+            }
+        } else {
+            try {
+                const response = await fetch(`http://localhost:5001/api/albums/${albumID}/${album}/${originalTable}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-type': 'application/json' },
+                });
+        
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Delete failed: ${errorData.message || 'Unknown error'}`);
+                }
+    
+                console.log(await response.json());
+                console.log('Album deleted successfully.');
+
+                setInCirculation('false')
+
+                getAlbum()
+            } catch (error) {
+                console.error('Error during deletion:', error.message);
+            }
         }
 
-        getAlbum()
+        toast('Deleted album!', {
+            autoClose: 2000,
+            theme: "light",
+            });
     };
 
     const addToCirculation = async () => {
         try {
-            const response = await fetch(`http://localhost:5001/api/addToCirculation/${album}`, {
+            const response = await fetch(`http://localhost:5001/api/addToCirculation/${album}/${whichTable}`, {
                 method: 'POST',
                 headers: { 'Content-type': 'application/json' },
             })
@@ -219,11 +272,17 @@ const Album = ({isStaticMode}) => {
 
             console.log(await response.json());
             console.log('Album added successfully.');
-
-            setInCirculation(true)
         } catch (error) {
             console.error('Error during deletion:', error.message);
         }
+
+        toast('Added to inCirculation!', {
+            autoClose: 2000,
+            theme: "light",
+            });
+
+        setInCirculation('true')
+        localStorage.setItem('in_circulation', 'true')
     }
     
 
@@ -236,6 +295,7 @@ const Album = ({isStaticMode}) => {
             deleteFunction={deleteAlbum}
             addToCirculation={addToCirculation}
          />
+         <ToastContainer />
         {/* <a
             href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}
             className="spotify-login-button">

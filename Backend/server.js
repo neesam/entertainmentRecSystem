@@ -425,6 +425,19 @@ app.get('/api/album_rymrecs', async (req, res) => {
     }
 });
 
+app.get('/api/album_soundsofspotify', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_soundsofspotify order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.get('/api/album_tolisten', async (req, res) => {
     const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_tolisten order by rand() limit 1'
 
@@ -451,10 +464,56 @@ app.get('/api/album_vaporwave', async (req, res) => {
     }
 });
 
-// album deletion
+app.get('/api/album_waterloggedEars', async (req, res) => {
+    const sqlQuery = 'select * from musiccataloginghelper.musicTables.album_waterloggedEars order by rand() limit 1'
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.post('/api/addToCirculation/:album/:table', async (req, res) => {
+    const album = req.params.album;
+    const table = req.params.table;
+
+    const query = `
+        INSERT INTO \`musiccataloginghelper.musicTables.album_inCirculation\`
+        (string_field_0, id, original_table, in_circulation) VALUES (@album, GENERATE_UUID(), @table, 'true')
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { album, table },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Table not found');
+        }
+
+        res.status(200).send({ message: 'Album added successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
+// album deletion non-inCirculation
 
 app.delete('/api/albums/:id/:whichTable', async (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const whichTable = req.params.whichTable;
 
     console.log(`Received DELETE request for id: ${id} from table: ${whichTable}`);
@@ -487,6 +546,52 @@ app.delete('/api/albums/:id/:whichTable', async (req, res) => {
     } catch (err) {
         console.error('Error:', err.message);
         res.status(500).send('Server Error');
+    }
+});
+
+app.delete('/api/albums/:id/:album/:original_table', async (req, res) => {
+    const id = req.params.id;
+    const originalTable = req.params.original_table;
+    const album = req.params.album;
+
+    console.log(`Received DELETE request for album: ${album} from table: ${originalTable} and album_inCirculation`);
+
+
+    // Query to delete from album_inCirculation
+    const query1 = `
+    DELETE FROM \`musiccataloginghelper.musicTables.album_inCirculation\`
+    WHERE id = @id
+    `;
+
+    // Query to delete from the original table
+    const query2 = `
+        DELETE FROM \`musiccataloginghelper.musicTables.${originalTable}\`
+        WHERE string_field_0 = @album
+    `;
+
+    try {
+        // Execute the first query
+        const options1 = {
+            query: query1,
+            params: { id },
+        };
+        const [job1] = await bigquery.createQueryJob(options1);
+        console.log(`Job ${job1.id} started.`);
+        await job1.getQueryResults();
+
+        // Execute the second query
+        const options2 = {
+            query: query2,
+            params: { album },
+        };
+        const [job2] = await bigquery.createQueryJob(options2);
+        console.log(`Job ${job2.id} started.`);
+        await job2.getQueryResults();
+
+        res.status(200).send({ message: 'Album deleted successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send({ error: 'Server Error' });
     }
 });
 

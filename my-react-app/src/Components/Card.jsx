@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
 import React from 'react';
 
@@ -8,7 +9,7 @@ import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
 
 
-const EntCard = ({ clickFunction, deleteFunction, addToCirculation, attributes, submitForm }) => {
+const EntCard = ({ clickFunction, deleteFunction, addToCirculation, notify, attributes, submitForm }) => {
     const [showModal, setShowModal] = useState(false);
     const [selectedOption, setSelectedOption] = useState(""); // State for dropdown selection
 
@@ -23,6 +24,10 @@ const EntCard = ({ clickFunction, deleteFunction, addToCirculation, attributes, 
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
     };
+
+    useEffect(() => {
+        console.log(attributes.inCirculation)
+    })
 
     return (
         <div style={{
@@ -68,15 +73,7 @@ const EntCard = ({ clickFunction, deleteFunction, addToCirculation, attributes, 
                         onClick={deleteFunction}>
                         Delete {attributes.type}
                     </Button>
-                    {attributes.inCirculation === true ? (
-                        <Button
-                            style={{ marginRight: '5%', marginBottom: '3%' }}
-                            variant='danger'
-                            onClick={deleteFunction}>
-                            Delete from inCirculation
-                        </Button>
-                    ) : <></>}
-                    {attributes.type === 'album' ? (
+                    {attributes.type === 'album' && attributes.inCirculation === 'false' ? (
                         <Button
                         style={{ marginRight: '5%', marginBottom: '3%' }}
                         variant='light'
