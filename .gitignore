@@ -2,3 +2,4 @@ node_modules/
 musiccataloginghelper-*.json
 **/.env
 .DS_Store
+spotify.py
