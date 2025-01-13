@@ -9,11 +9,14 @@ import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
 
 
-const EntCard = ({ clickFunction, deleteFunction, addToCirculation, notify, attributes, submitForm }) => {
+const EntCard = ({ clickFunction, deleteFunction, addToCirculation, attributes, submitForm }) => {
     const [showModal, setShowModal] = useState(false);
     const [selectedOption, setSelectedOption] = useState(""); // State for dropdown selection
 
     const handleModalOpen = () => setShowModal(true);
+
+    const handleModalHide = () => setShowModal(false)
+
     const handleModalClose = () => {
         if (selectedOption) {
             submitForm(selectedOption);
@@ -21,9 +24,7 @@ const EntCard = ({ clickFunction, deleteFunction, addToCirculation, notify, attr
         setShowModal(false);
     }
 
-    const handleOptionChange = (event) => {
-        setSelectedOption(event.target.value);
-    };
+    const handleOptionChange = (event) => setSelectedOption(event.target.value);
 
     useEffect(() => {
         console.log(attributes.inCirculation)
@@ -84,7 +85,7 @@ const EntCard = ({ clickFunction, deleteFunction, addToCirculation, notify, attr
                 </div>
             </Card>
 
-            <Modal show={showModal} onHide={handleModalClose}>
+            <Modal show={showModal} onHide={handleModalHide}>
                 <Modal.Header closeButton>
                     {attributes.type === 'album' ? (
                         <Modal.Title>
@@ -111,12 +112,10 @@ const EntCard = ({ clickFunction, deleteFunction, addToCirculation, notify, attr
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleModalClose}>
+                    <Button variant="secondary" onClick={handleModalHide}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={() => {
-                        handleModalClose();
-                    }}>
+                    <Button variant="primary" onClick={handleModalClose}>
                         Get {attributes.type}
                     </Button>
                 </Modal.Footer>

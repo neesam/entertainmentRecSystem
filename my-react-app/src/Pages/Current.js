@@ -1,17 +1,11 @@
 import React, {useState, useEffect} from 'react';
+
 import Album from "../Components/Album";
 import Show from '../Components/Show';
 import Film from "../Components/Film";
 import Book from '../Components/Book';
-import renderChart from "../Components/Chart";
-// import GetAttributesForRYMAlbum from "../FetchingFunctionality/Attributes";
-import NavBar from "../Components/Nav";
 
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Modal from 'react-modal';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import SpotifySearch from "../Components/SpotifySearch";
 
 const Current = () => {
     // const [albumTitle, setAlbumTitle] = useState('')
@@ -41,10 +35,10 @@ const Current = () => {
     const toggleStaticMode = () => {
         setIsStaticMode((prevMode) => !prevMode);
         localStorage.setItem('staticMode', !staticMode)
-      };
+    };
 
-  return (
-      <>
+    return (
+    <>
         <button
             onClick={toggleStaticMode}
             className="spotify-login-button">
@@ -54,7 +48,7 @@ const Current = () => {
         <Film isStaticMode={staticMode}/>
         <Show isStaticMode={staticMode}/>
         <Book isStaticMode={staticMode}/>
-      </>
+    </>
   );
 };
 

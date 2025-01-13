@@ -1,5 +1,6 @@
 import {useEffect} from 'react'
 import React, {useState} from "react";
+import { ToastContainer, toast } from 'react-toastify';
 
 import EntCard from './Card';
 
@@ -193,17 +194,27 @@ const Book = ({isStaticMode}) => {
             console.error('Error during deletion:', error.message);
         }
 
+        toast('Deleted book!', {
+            autoClose: 2000,
+            theme: "light",
+            });
+
         getBook()
     };
 
     return (
         <>
-        <EntCard 
-            attributes={{ color: isStaticMode ? backgroundColor : 'beige', title: book, type: 'book', tables: tables }}
-            clickFunction={getBook}
-            submitForm={getFromSpecificTable}
-            deleteFunction={deleteBook}
-        />
+            <EntCard 
+                attributes={{ 
+                    color: isStaticMode ? backgroundColor : 'beige', 
+                    title: book, 
+                    type: 'book', 
+                    tables: tables }}
+                clickFunction={getBook}
+                submitForm={getFromSpecificTable}
+                deleteFunction={deleteBook}
+            />
+            <ToastContainer />
         </>
     )
 }

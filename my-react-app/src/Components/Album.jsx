@@ -288,19 +288,25 @@ const Album = ({isStaticMode}) => {
 
     return (
         <>
-        <EntCard 
-            attributes={{ color: isStaticMode ? backgroundColor : 'white', title: album, type: 'album', tables: tables2, table: whichTable, inCirculation: inCirculation }}
-            clickFunction={getAlbum}
-            submitForm={getFromSpecificTable}
-            deleteFunction={deleteAlbum}
-            addToCirculation={addToCirculation}
-         />
-         <ToastContainer />
-        {/* <a
-            href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}
-            className="spotify-login-button">
-        </a> */}
-         </>
+            <EntCard 
+                attributes={{ 
+                    color: isStaticMode ? backgroundColor : 'white', 
+                    title: album, 
+                    type: 'album', 
+                    tables: tables2, 
+                    table: whichTable, 
+                    inCirculation: inCirculation }}
+                clickFunction={getAlbum}
+                submitForm={getFromSpecificTable}
+                deleteFunction={deleteAlbum}
+                addToCirculation={addToCirculation}
+            />
+            <ToastContainer />
+            {/* <a
+                href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}
+                className="spotify-login-button">
+            </a> */}
+        </>
     )
 }
 

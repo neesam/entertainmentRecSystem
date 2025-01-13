@@ -1,5 +1,7 @@
 import {useEffect} from 'react'
 import React, {useState} from "react";
+import { ToastContainer, toast } from 'react-toastify';
+
 import EntCard from '../Components/Card';
 
 import randomColor from '../Helper/randomColor';
@@ -122,6 +124,11 @@ const Film = ({isStaticMode}) => {
             console.error('Error during deletion:', error.message);
         }
 
+        toast('Deleted film!', {
+                autoClose: 2000,
+                theme: "light",
+        });
+
         getFilm()
     };
 
@@ -146,12 +153,20 @@ const Film = ({isStaticMode}) => {
 
     
     return (
-        <EntCard 
-            attributes={{ color: isStaticMode ? backgroundColor : 'pink', title: film, type: 'film', tables: tables, table: whichTable }}
-            clickFunction={getFilm}
-            submitForm={getFromSpecificTable}
-            deleteFunction={deleteFilm}
-        />
+        <>
+            <EntCard 
+                attributes={{ 
+                    color: isStaticMode ? backgroundColor : 'pink', 
+                    title: film, 
+                    type: 'film', 
+                    tables: tables, 
+                    table: whichTable }}
+                clickFunction={getFilm}
+                submitForm={getFromSpecificTable}
+                deleteFunction={deleteFilm}
+            />
+            <ToastContainer />
+        </>
     )
 }
 
