@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const {spawn} = require('child_process');
-const { Pool } = require('pg');
 const { BigQuery } = require('@google-cloud/bigquery');
 
 
@@ -16,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`); // Logs the method and URL
+    console.log(`${req.method} ${req.url}`); 
     next();
 });
 
@@ -24,24 +23,20 @@ const bigquery = new BigQuery({
     keyFilename: BQ_API,
 });
 
-// PostgreSQL connection
-// const pool = new Pool({
-//     user: 'postgres',
-//     host: 'localhost',
-//     database: 'postgres',
-//     password: 'root',
-//     port: 5432,
-// });
-
 // Run metadata pipeline
 
-app.get('/api/pipeline', async (req, res) => {
+app.post('/api/pipeline/:album', async (req, res) => {
     var dataToSend;
+    const album = req.params.album;
 
     const python = spawn('python3', ['/Users/anees/entertainmentRecSystem/Backend/script1.py']);
-    python.stdout.on('data', function (data) {
-        console.log('Pipe data from python script ...');
-        dataToSend = data.toString();
+
+    python.stdin.write(JSON.stringify({ album: album }));
+    python.stdin.end();
+
+    python.stdout.on('data', (data) => {
+        console.log('Python output:', data.toString());
+        res.send(data.toString());
     })
 
     python.on('close', (code) => {
@@ -49,26 +44,143 @@ app.get('/api/pipeline', async (req, res) => {
         res.send(dataToSend);
     })
 
-    python.on('error', (err) => {
-        console.error('Failed to start Python process:', err);
-        res.status(500).send({ message: 'Failed to execute Python script.' });
-    });
+    python.stderr.on('data', (data) => {
+        console.error('Error from Python:', data.toString());
+        res.status(500).send(`Error running Python script: ${data.toString()}`);
+      });
+})
+
+// Add to queue table
+
+app.post('/api/addAlbumToQueue/:album', async (req, res) => {
+    const album = req.params.album;
+
+    const query = `
+        INSERT INTO \`musiccataloginghelper.metadata.queue\`
+        (title, id, type) VALUES (@album, GENERATE_UUID(), 'album')
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { album },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Table not found');
+        }
+
+        res.status(200).send({ message: 'Album added successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
+app.post('/api/addBookToQueue/:book', async (req, res) => {
+    const book = req.params.book;
+
+    const query = `
+        INSERT INTO \`musiccataloginghelper.metadata.queue\`
+        (title, id, type) VALUES (@book, GENERATE_UUID(), 'book')
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { book },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Table not found');
+        }
+
+        res.status(200).send({ message: 'Book added successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
+app.post('/api/addFilmToQueue/:film', async (req, res) => {
+    const film = req.params.film;
+
+    const query = `
+        INSERT INTO \`musiccataloginghelper.metadata.queue\`
+        (title, id, type) VALUES (@film, GENERATE_UUID(), 'film')
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { film },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Table not found');
+        }
+
+        res.status(200).send({ message: 'Film added successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
+app.post('/api/addShowToQueue/:show', async (req, res) => {
+    const show = req.params.show;
+
+    const query = `
+        INSERT INTO \`musiccataloginghelper.metadata.queue\`
+        (title, id, type) VALUES (@show, GENERATE_UUID(), 'show')
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { show },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Table not found');
+        }
+
+        res.status(200).send({ message: 'Show added successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
 })
 
 // whichTable
-
-app.get('/api/whichMusicTable1', async (req, res) => {
-    const sqlQuery = 'select * from musiccataloginghelper.music_tables.whichTableMusic order by rand() limit 1'
-
-    try {
-        const [rows] = await bigquery.query({ query: sqlQuery });
-        res.json(rows)
-        console.log(rows)
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-});
 
 app.get('/api/whichFilmTable', async (req, res) => {
     const sqlQuery = 'select * from musiccataloginghelper.film_tables.whichTableFilm order by rand() limit 1'

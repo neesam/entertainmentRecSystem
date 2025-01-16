@@ -151,6 +151,25 @@ const Film = ({isStaticMode}) => {
             localStorage.setItem('filmBackgroundColor', bgColor)
     }
 
+    const addToQueue = async () => {
+        try {
+            const response = await fetch(`http://localhost:5001/api/addFilmToQueue/${film}`, {
+                method: 'POST',
+                headers: { 'Content-type': 'application/json' },
+            })
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Post failed: ${errorData.message || 'Unknown error'}`);
+            }
+
+            console.log(await response.json());
+            console.log('Film added successfully.');
+        } catch(error) {
+            console.error('Error in API call', error);
+        }
+      }
+
     
     return (
         <>
@@ -164,6 +183,7 @@ const Film = ({isStaticMode}) => {
                 clickFunction={getFilm}
                 submitForm={getFromSpecificTable}
                 deleteFunction={deleteFilm}
+                addToQueue={addToQueue}
             />
             <ToastContainer />
         </>

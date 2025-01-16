@@ -1,8 +1,10 @@
 import {useEffect} from 'react'
 import React, {useState} from "react";
 import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios'
 
 import EntCard from './Card';
+import Button from 'react-bootstrap/esm/Button';
 
 import randomColor from '../Helper/randomColor';
 
@@ -15,6 +17,8 @@ const Album = ({isStaticMode}) => {
     const [originalTable, setOriginalTable] = useState('')
     const [tablesUsed, setTablesUsed] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
+
+    const [pythonResponse, setPythonResponse] = useState('')
 
     // const tables1 = [
     //     'musicTable1', 
@@ -284,6 +288,34 @@ const Album = ({isStaticMode}) => {
         setInCirculation('true')
         localStorage.setItem('in_circulation', 'true')
     }
+
+    const handleSubmit = async () => {
+        try {
+          const res = await axios.post(`http://localhost:5001/api/pipeline/${album}`, { album });
+          console.log(res.data); // assuming your response is the output from Python
+        } catch (error) {
+          console.error("Error in API call", error);
+        }
+      };
+
+      const addToQueue = async () => {
+        try {
+            const response = await fetch(`http://localhost:5001/api/addAlbumToQueue/${album}`, {
+                method: 'POST',
+                headers: { 'Content-type': 'application/json' },
+            })
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Post failed: ${errorData.message || 'Unknown error'}`);
+            }
+
+            console.log(await response.json());
+            console.log('Album added successfully.');
+        } catch(error) {
+            console.error('Error in API call', error);
+        }
+      }
     
 
     return (
@@ -300,12 +332,12 @@ const Album = ({isStaticMode}) => {
                 submitForm={getFromSpecificTable}
                 deleteFunction={deleteAlbum}
                 addToCirculation={addToCirculation}
+                addToQueue={addToQueue}
             />
             <ToastContainer />
-            {/* <a
-                href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}
-                className="spotify-login-button">
-            </a> */}
+            <Button
+                onClick={handleSubmit}
+            ></Button>
         </>
     )
 }

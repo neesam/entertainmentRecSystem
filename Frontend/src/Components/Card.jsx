@@ -9,7 +9,7 @@ import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
 
 
-const EntCard = ({ clickFunction, deleteFunction, addToCirculation, attributes, submitForm }) => {
+const EntCard = ({ clickFunction, deleteFunction, addToCirculation, addToQueue, attributes, submitForm }) => {
     const [showModal, setShowModal] = useState(false);
     const [selectedOption, setSelectedOption] = useState(""); // State for dropdown selection
 
@@ -25,10 +25,6 @@ const EntCard = ({ clickFunction, deleteFunction, addToCirculation, attributes, 
     }
 
     const handleOptionChange = (event) => setSelectedOption(event.target.value);
-
-    useEffect(() => {
-        console.log(attributes.inCirculation)
-    })
 
     return (
         <div style={{
@@ -56,6 +52,18 @@ const EntCard = ({ clickFunction, deleteFunction, addToCirculation, attributes, 
                     variant="outline-secondary"
                     onClick={handleModalOpen}>
                     &#9998; 
+                </Button>
+
+                <Button
+                    style={{
+                        position: 'absolute',
+                        bottom: '10px',
+                        right: '10px',
+                        zIndex: 1
+                    }}
+                    variant="outline-info"
+                    onClick={addToQueue}>
+                    &#43; 
                 </Button>
 
                 <Card.Body>

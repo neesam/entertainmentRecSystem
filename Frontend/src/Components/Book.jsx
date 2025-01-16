@@ -202,6 +202,25 @@ const Book = ({isStaticMode}) => {
         getBook()
     };
 
+    const addToQueue = async () => {
+        try {
+            const response = await fetch(`http://localhost:5001/api/addBookToQueue/${book}`, {
+                method: 'POST',
+                headers: { 'Content-type': 'application/json' },
+            })
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Post failed: ${errorData.message || 'Unknown error'}`);
+            }
+
+            console.log(await response.json());
+            console.log('Book added successfully.');
+        } catch(error) {
+            console.error('Error in API call', error);
+        }
+      }
+
     return (
         <>
             <EntCard 
@@ -213,6 +232,7 @@ const Book = ({isStaticMode}) => {
                 clickFunction={getBook}
                 submitForm={getFromSpecificTable}
                 deleteFunction={deleteBook}
+                addToQueue={addToQueue}
             />
             <ToastContainer />
         </>

@@ -26,6 +26,9 @@ const Show = ({isStaticMode}) => {
         const showValue = localStorage.getItem('show')
         setShow(showValue)
 
+        const whichTableValue = localStorage.getItem('whichShowTable')
+        setWhichTable(whichTableValue)
+
         const showBackgroundColor = localStorage.getItem('showBackgroundColor');
         setBackgroundColor(showBackgroundColor)
     }, []);
@@ -141,6 +144,25 @@ const Show = ({isStaticMode}) => {
         getShow()
     }
 
+    const addToQueue = async () => {
+        try {
+            const response = await fetch(`http://localhost:5001/api/addShowToQueue/${show}`, {
+                method: 'POST',
+                headers: { 'Content-type': 'application/json' },
+            })
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Post failed: ${errorData.message || 'Unknown error'}`);
+            }
+
+            console.log(await response.json());
+            console.log('Show added successfully.');
+        } catch(error) {
+            console.error('Error in API call', error);
+        }
+      }
+
     return (
         <>
             <EntCard 
@@ -153,6 +175,7 @@ const Show = ({isStaticMode}) => {
                 clickFunction={getShow}
                 deleteFunction={deleteShow}
                 submitForm={getFromSpecificTable}
+                addToQueue={addToQueue}
             />
             <ToastContainer />
         </>
