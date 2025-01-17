@@ -5,6 +5,8 @@ import Show from '../Components/Show';
 import Film from "../Components/Film";
 import Book from '../Components/Book';
 
+import axios from 'axios'
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Current = () => {
@@ -37,12 +39,26 @@ const Current = () => {
         localStorage.setItem('staticMode', !staticMode)
     };
 
+    const handleSubmit = async () => {
+        try {
+            const res = await axios.post(`http://localhost:5001/api/pipeline/`);
+            console.log(res.data); // assuming your response is the output from Python
+        } catch (error) {
+            console.error("Error in API call", error);
+        }
+    };
+
     return (
     <>
         <button
             onClick={toggleStaticMode}
-            className="spotify-login-button">
+            className="change-theme-button">
                 {staticMode ? 'Static colors' : 'Random colors'}
+        </button>
+        <button
+            onClick={handleSubmit}
+            className="pipeline-button">
+                Run pipeline
         </button>
         <Album isStaticMode={staticMode}/>
         <Film isStaticMode={staticMode}/>

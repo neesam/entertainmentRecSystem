@@ -76,21 +76,24 @@ const Book = ({isStaticMode}) => {
                 'harlan ellison'
             ]
 
-            if(anthologies.includes(data[0]['string_field_0'])) {
+            console.log(`-----> ${whichTable}, ${data[0]['id']}`)
+
+            if(anthologies.includes(data[0]['title'])) {
                 setBookID(data[0]['id'])
-                setBook(data[0]['string_field_0'] + ' ' + Math.floor(Math.random(1) * 5))
-                localStorage.setItem('book', data[0]['string_field_0'] + ' ' + Math.floor(Math.random(1) * 5))
+                setBook(data[0]['title'] + ' ' + Math.floor(Math.random(1) * 5))
+                localStorage.setItem('book', data[0]['title'] + ' ' + Math.floor(Math.random(1) * 5))
                 localStorage.setItem('bookID', bookID)
             } else if((whichTable === 'penguin_modern' || whichTable === 'penguin_classics')) {
+                console.log(data[0]['id'])
                 setBookID(data[0]['id'])
                 setBook(whichTable + ' ' + bookID)
                 localStorage.setItem('book', whichTable + ' ' + bookID)
-                localStorage.setItem('bookID', bookID)
+                localStorage.setItem('bookID', data[0]['id'])
             } else {
                 setBookID(data[0]['id'])
-                setBook(data[0]['string_field_0'])
-                localStorage.setItem('book', data[0]['string_field_0'])
-                localStorage.setItem('bookID', bookID)
+                setBook(data[0]['title'])
+                localStorage.setItem('book', data[0]['title'])
+                localStorage.setItem('bookID', data[0]['id'])
             }
 
             // Logic to change background on each button press
@@ -121,7 +124,7 @@ const Book = ({isStaticMode}) => {
                 }
 
                 const data = await response.json()
-                const fetchedTable = data[0]['string_field_0']
+                const fetchedTable = data[0]['title']
                 console.log(fetchedTable)
 
                 if (!localTablesUsed.includes(fetchedTable)) {
@@ -163,8 +166,8 @@ const Book = ({isStaticMode}) => {
                 localStorage.setItem('bookID', bookID)
             } else {
                 setBookID(data[0]['id'])
-                setBook(data[0]['string_field_0'])
-                localStorage.setItem('book', data[0]['string_field_0'])
+                setBook(data[0]['title'])
+                localStorage.setItem('book', data[0]['title'])
                 localStorage.setItem('bookID', bookID)
             }
 
@@ -219,6 +222,11 @@ const Book = ({isStaticMode}) => {
         } catch(error) {
             console.error('Error in API call', error);
         }
+
+        toast('Added to queue!', {
+            autoClose: 2000,
+            theme: "light",
+            });
       }
 
     return (

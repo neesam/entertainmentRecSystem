@@ -112,9 +112,9 @@ const Album = ({isStaticMode}) => {
 
             console.log(data[0]['id'])
 
-            setAlbum(data[0]['string_field_0'])
+            setAlbum(data[0]['title'])
             setAlbumID(data[0]['id'])
-            localStorage.setItem('album', data[0]['string_field_0'])
+            localStorage.setItem('album', data[0]['title'])
             localStorage.setItem('albumID', data[0]['id'])
             setInCirculation('false')
             localStorage.setItem('in_circulation', 'false')
@@ -141,14 +141,14 @@ const Album = ({isStaticMode}) => {
 
             while (!tableUsed) {
 
-                const response = await fetch('http://localhost:5001/api/whichMusicTable2');
+                const response = await fetch('http://localhost:5001/api/whichMusicTable');
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch whichTable');
                 }
 
                 const data = await response.json()
-                const fetchedTable = data[0]['string_field_0']
+                const fetchedTable = data[0]['title']
                 console.log(fetchedTable)
 
                 if (!localTablesUsed.includes(fetchedTable)) {
@@ -182,10 +182,10 @@ const Album = ({isStaticMode}) => {
 
             console.log(data)
 
-            setAlbum(data[0]['string_field_0'])
+            setAlbum(data[0]['title'])
             setAlbumID(data[0]['id'])
             setWhichTable(specificTable)
-            localStorage.setItem('album', data[0]['string_field_0'])
+            localStorage.setItem('album', data[0]['title'])
             localStorage.setItem('albumID', albumID)
             localStorage.setItem('whichMusicTable', specificTable)
 
@@ -289,15 +289,6 @@ const Album = ({isStaticMode}) => {
         localStorage.setItem('in_circulation', 'true')
     }
 
-    const handleSubmit = async () => {
-        try {
-          const res = await axios.post(`http://localhost:5001/api/pipeline/${album}`, { album });
-          console.log(res.data); // assuming your response is the output from Python
-        } catch (error) {
-          console.error("Error in API call", error);
-        }
-      };
-
       const addToQueue = async () => {
         try {
             const response = await fetch(`http://localhost:5001/api/addAlbumToQueue/${album}`, {
@@ -315,6 +306,11 @@ const Album = ({isStaticMode}) => {
         } catch(error) {
             console.error('Error in API call', error);
         }
+
+        toast('Added to queue!', {
+            autoClose: 2000,
+            theme: "light",
+            });
       }
     
 
@@ -335,9 +331,6 @@ const Album = ({isStaticMode}) => {
                 addToQueue={addToQueue}
             />
             <ToastContainer />
-            <Button
-                onClick={handleSubmit}
-            ></Button>
         </>
     )
 }

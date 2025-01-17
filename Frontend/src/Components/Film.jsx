@@ -48,9 +48,9 @@ const Film = ({isStaticMode}) => {
 
             console.log(data)
 
-            setFilm(data[0]['string_field_0'])
+            setFilm(data[0]['title'])
             setFilmID(data[0]['id'])
-            localStorage.setItem('film', data[0]['string_field_0'])
+            localStorage.setItem('film', data[0]['title'])
             localStorage.setItem('filmID', data[0]['id'])
 
             const bgColor = randomColor()
@@ -79,7 +79,7 @@ const Film = ({isStaticMode}) => {
                 }
 
                 const data = await response.json()
-                const fetchedTable = data[0]['string_field_0']
+                const fetchedTable = data[0]['title']
 
                 console.log(data)
 
@@ -139,9 +139,9 @@ const Film = ({isStaticMode}) => {
             }
             const data = await response.json()
 
-            setFilm(data[0]['string_field_0'])
+            setFilm(data[0]['title'])
             setFilmID(data[0]['id'])
-            localStorage.setItem('film', data[0]['string_field_0'])
+            localStorage.setItem('film', data[0]['title'])
             localStorage.setItem('filmID', data[0]['id'])
 
             // Logic to change background on each button press
@@ -168,6 +168,11 @@ const Film = ({isStaticMode}) => {
         } catch(error) {
             console.error('Error in API call', error);
         }
+
+        toast('Added to queue!', {
+            autoClose: 2000,
+            theme: "light",
+            });
       }
 
     

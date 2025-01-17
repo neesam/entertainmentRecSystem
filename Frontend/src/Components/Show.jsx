@@ -46,8 +46,8 @@ const Show = ({isStaticMode}) => {
 
             console.log(data)
 
-            setShow(data[0]['string_field_0'])
-            localStorage.setItem('show', data[0]['string_field_0'])
+            setShow(data[0]['title'])
+            localStorage.setItem('show', data[0]['title'])
 
             // Logic to change background on each button press
 
@@ -78,7 +78,7 @@ const Show = ({isStaticMode}) => {
                 }
 
                 const data = await response.json()
-                const fetchedTable = data[0]['string_field_0']
+                const fetchedTable = data[0]['title']
                 console.log(fetchedTable)
 
                 if (!localTablesUsed.includes(fetchedTable)) {
@@ -112,8 +112,8 @@ const Show = ({isStaticMode}) => {
 
             console.log(data)
 
-            setShow(data[0]['string_field_0'])
-            localStorage.setItem('show', data[0]['string_field_0'])
+            setShow(data[0]['title'])
+            localStorage.setItem('show', data[0]['title'])
 
             // Logic to change background on each button press
 
@@ -161,6 +161,11 @@ const Show = ({isStaticMode}) => {
         } catch(error) {
             console.error('Error in API call', error);
         }
+
+        toast('Added to queue!', {
+            autoClose: 2000,
+            theme: "light",
+            });
       }
 
     return (
