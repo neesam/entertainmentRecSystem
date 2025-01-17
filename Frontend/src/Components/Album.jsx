@@ -1,10 +1,8 @@
 import {useEffect} from 'react'
 import React, {useState} from "react";
 import { ToastContainer, toast } from 'react-toastify';
-import axios from 'axios'
 
 import EntCard from './Card';
-import Button from 'react-bootstrap/esm/Button';
 
 import randomColor from '../Helper/randomColor';
 
@@ -16,17 +14,8 @@ const Album = ({isStaticMode}) => {
     const [inCirculation, setInCirculation] = useState('')
     const [originalTable, setOriginalTable] = useState('')
     const [tablesUsed, setTablesUsed] = useState([])
+    const [allInCirculation, setAllInCirculation] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
-
-    const [pythonResponse, setPythonResponse] = useState('')
-
-    // const tables1 = [
-    //     'musicTable1', 
-    //     'musicTable2', 
-    //     'musicTable3', 
-    //     'musicTable4', 
-    //     'musicTable5'
-    // ]
 
     const tables2 = [
         'album_allgenres',
@@ -55,25 +44,6 @@ const Album = ({isStaticMode}) => {
 
     useEffect(() => {
 
-        // Logic to retrieve token from Spotify
-
-        // const hash = window.location.hash
-        // let token = window.localStorage.getItem("token")
-
-        // if (!token && hash) {
-        //     token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1]
-
-        //     window.location.hash = ""
-        //     window.localStorage.setItem("token", token)
-        // }
-
-        // if (token) {
-        //     let btn = document.querySelector('.spotify-login-button');
-        //     btn.style.display = 'none'
-        // }
-
-        // setToken(token)
-
         const albumValue = localStorage.getItem('album')
         setAlbum(albumValue)
 
@@ -97,7 +67,28 @@ const Album = ({isStaticMode}) => {
             setBackgroundColor(randColor)
             localStorage.setItem('albumBackgroundColor', randColor);
         }
+
+        // getAllCirculation();
     }, []);
+
+    // const getAllCirculation = async () => {
+    //     const response = await fetch(`http://localhost:5001/api/album_incirculation_all`)
+
+    //     if (!response.ok) {
+    //         throw new Error(`Failed to fetch details for album_inCirculation`);
+    //     }
+
+    //     const data = await response.json()
+
+    //     let inCirculation = {};
+        
+    //     for(let i = 0; i < data.length; i++) {
+    //         inCirculation([data[i]['title'], data[i]['id']])
+    //     }
+
+    //     setAllInCirculation(inCirculation)
+    //     localStorage.setItem('allInCirculation', inCirculation)
+    // }
 
     const getAlbum = async () => {
 
@@ -289,7 +280,7 @@ const Album = ({isStaticMode}) => {
         localStorage.setItem('in_circulation', 'true')
     }
 
-      const addToQueue = async () => {
+    const addToQueue = async () => {
         try {
             const response = await fetch(`http://localhost:5001/api/addAlbumToQueue/${album}`, {
                 method: 'POST',
@@ -311,7 +302,12 @@ const Album = ({isStaticMode}) => {
             autoClose: 2000,
             theme: "light",
             });
-      }
+    }
+
+    // const setAlbumToCirculation = async (album) => {
+    //     setAlbum(album[0])
+    //     setAlbumID(album[1])
+    // }
     
 
     return (
@@ -323,9 +319,12 @@ const Album = ({isStaticMode}) => {
                     type: 'album', 
                     tables: tables2, 
                     table: whichTable, 
-                    inCirculation: inCirculation }}
+                    inCirculation: inCirculation,
+                    allInCirculation: allInCirculation
+                }}
                 clickFunction={getAlbum}
-                submitForm={getFromSpecificTable}
+                submitTablesForm={getFromSpecificTable}
+                // submitCirculationForm={setAlbumToCirculation}
                 deleteFunction={deleteAlbum}
                 addToCirculation={addToCirculation}
                 addToQueue={addToQueue}

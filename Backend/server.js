@@ -45,8 +45,6 @@ const bigquery = new BigQuery({
 
 app.post('/api/pipeline', async (req, res) => {
 
-    console.log(`${PYTHON_PACKAGE}`)
-
     const python = spawn(`${PYTHON_PACKAGE}`, [`${PIPELINE_FILE_PATH}`]);
 
     python.stdout.on('data', (data) => {
@@ -61,7 +59,7 @@ app.post('/api/pipeline', async (req, res) => {
     python.stderr.on('data', (data) => {
         console.error('Error from Python:', data.toString());
         res.status(500).send(`Error running Python script: ${data.toString()}`);
-      });
+    });
 })
 
 // Add to queue table
@@ -384,6 +382,19 @@ app.get('/api/album_hopelessrecords', async (req, res) => {
 
 app.get('/api/album_incirculation', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_inCirculation order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_incirculation_all', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_inCirculation`
 
     try {
         const [rows] = await bigquery.query({ query: sqlQuery });

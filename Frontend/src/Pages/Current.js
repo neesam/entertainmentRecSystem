@@ -6,6 +6,8 @@ import Film from "../Components/Film";
 import Book from '../Components/Book';
 
 import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify';
+
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -46,6 +48,11 @@ const Current = () => {
         } catch (error) {
             console.error("Error in API call", error);
         }
+
+        toast('ETL complete!', {
+            autoClose: 2000,
+            theme: "light",
+            });
     };
 
     return (
@@ -64,6 +71,7 @@ const Current = () => {
         <Film isStaticMode={staticMode}/>
         <Show isStaticMode={staticMode}/>
         <Book isStaticMode={staticMode}/>
+        <ToastContainer></ToastContainer>
     </>
   );
 };

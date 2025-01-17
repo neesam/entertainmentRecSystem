@@ -9,20 +9,44 @@ import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
 
 
-const EntCard = ({ clickFunction, deleteFunction, addToCirculation, addToQueue, attributes, submitForm }) => {
-    const [showModal, setShowModal] = useState(false);
+const EntCard = ({ 
+        clickFunction, 
+        deleteFunction, 
+        addToCirculation, 
+        allInCirculation, 
+        addToQueue, 
+        attributes, 
+        submitTablesForm,
+        submitCirculationForm
+    }) => {
+        
+    const [showTablesModal, setShowTablesModal] = useState(false);
+    const [showCirculationModal, setShowCirculationModal] = useState(false);
     const [selectedOption, setSelectedOption] = useState(""); // State for dropdown selection
 
-    const handleModalOpen = () => setShowModal(true);
+    const handleTablesModalOpen = () => setShowTablesModal(true);
 
-    const handleModalHide = () => setShowModal(false)
+    const handleTablesModalHide = () => setShowTablesModal(false)
 
-    const handleModalClose = () => {
+    const handleTablesModalClose = () => {
         if (selectedOption) {
-            submitForm(selectedOption);
+            submitTablesForm(selectedOption);
         }
-        setShowModal(false);
+        setShowTablesModal(false);
     }
+
+    // const handleCirculationModalOpen = () => {
+    //     setShowCirculationModal(true);
+    // } 
+
+    // const handleCirculationModalHide = () => setShowCirculationModal(false)
+
+    // const handleCirculationModalClose = () => {
+    //     if (selectedOption) {
+    //         submitCirculationForm(selectedOption);
+    //     }
+    //     setShowCirculationModal(false);
+    // }
 
     const handleOptionChange = (event) => setSelectedOption(event.target.value);
 
@@ -50,9 +74,23 @@ const EntCard = ({ clickFunction, deleteFunction, addToCirculation, addToQueue, 
                         zIndex: 1
                     }}
                     variant="outline-secondary"
-                    onClick={handleModalOpen}>
+                    onClick={handleTablesModalOpen}>
                     &#9998; 
                 </Button>
+
+                {/* {attributes.type === 'album' ? (
+                    <Button
+                        style={{
+                            position: 'absolute',
+                            top: '65px',
+                            right: '10px',
+                            zIndex: 1
+                        }}
+                        variant="outline-secondary"
+                        onClick={handleCirculationModalOpen}>
+                        &#x1F4BB; 
+                    </Button>
+                ):<></>} */}
 
                 <Button
                     style={{
@@ -93,7 +131,40 @@ const EntCard = ({ clickFunction, deleteFunction, addToCirculation, addToQueue, 
                 </div>
             </Card>
 
-            <Modal show={showModal} onHide={handleModalHide}>
+            {/* {attributes.type === 'album' ? (
+                <Modal show={showCirculationModal} onHide={handleCirculationModalHide}>
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        Albums in circulation
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <Form>
+                        <Form.Group controlId="formDropdown">
+                            <Form.Label>Choose an album</Form.Label>
+                            <Form.Control as="select" value={selectedOption} onChange={handleOptionChange}>
+                                <option value="">-- Select an option --</option>
+                                {attributes.allInCirculation.map((title, index) => (
+                                    <option key={index} value={title}>
+                                        {title}
+                                    </option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCirculationModalHide}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleCirculationModalClose}>
+                        Set album
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            ) : <></>} */}
+
+            <Modal show={showTablesModal} onHide={handleTablesModalHide}>
                 <Modal.Header closeButton>
                     {attributes.type === 'album' ? (
                         <Modal.Title>
@@ -120,10 +191,10 @@ const EntCard = ({ clickFunction, deleteFunction, addToCirculation, addToQueue, 
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleModalHide}>
+                    <Button variant="secondary" onClick={handleTablesModalHide}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleModalClose}>
+                    <Button variant="primary" onClick={handleTablesModalClose}>
                         Get {attributes.type}
                     </Button>
                 </Modal.Footer>
