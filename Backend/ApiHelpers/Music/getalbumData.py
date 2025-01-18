@@ -5,11 +5,11 @@ from datetime import datetime
 from google.cloud import bigquery
 from dotenv import load_dotenv
 
-from Backend.ApiHelpers.Music import getSpotifyToken
+from . import spotifyToken
 
 load_dotenv()
 
-access_token = getSpotifyToken.getSpotifyToken()
+access_token = spotifyToken.getSpotifyToken()
 
 BQ_SERVICE_ACCOUNT = os.getenv('BQ_SERVICE_ACCOUNT')
 BQ_PROJECT = os.getenv('BQ_PROJECT')
@@ -17,10 +17,10 @@ BQ_PROJECT = os.getenv('BQ_PROJECT')
 METADATA_DATASET= os.getenv('METADATA_DATASET')
 MUSIC_METADATA_TABLE = os.getenv('MUSIC_METADATA_TABLE')
 
-def getAlbumData():
+def getAlbumData(data):
     search_url = 'https://api.spotify.com/v1/search'
 
-    query = i[1]
+    query = data[1]
     search_type = 'album'
     limit = 1
 
