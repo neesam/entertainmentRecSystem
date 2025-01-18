@@ -12,6 +12,11 @@ const BQ_PROJECT = process.env.BQ_PROJECT;
 
 const METADATA_DATASET = process.env.METADATA_DATASET;
 const QUEUE_TABLE = process.env.QUEUE_TABLE;
+const MUSIC_METADATA_TABLE = process.env.MUSIC_METADATA_TABLE;
+const FILM_METADATA_TABLE = process.env.FILM_METADATA_TABLE;
+const SHOW_METADATA_TABLE = process.env.SHOW_METADATA_TABLE;
+const BOOK_METADATA_TABLE = process.env.BOOK_METADATA_TABLE;
+
 
 const FILM_TABLES_DATASET = process.env.FILM_TABLES_DATASET;
 const WHICH_TABLE_FILM = process.env.WHICH_TABLE_FILM;
@@ -949,6 +954,63 @@ app.delete('/api/books/:id/:whichTable', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+// Metadata tables
+
+app.get('/api/film_metadata_all', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${METADATA_DATASET}.${FILM_METADATA_TABLE}`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/music_metadata_all', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${METADATA_DATASET}.${MUSIC_METADATA_TABLE}`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+
+app.get('/api/show_metadata_all', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${METADATA_DATASET}.${SHOW_METADATA_TABLE}`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+
+app.get('/api/book_metadata_all', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${METADATA_DATASET}.${BOOK_METADATA_TABLE}`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 
 // server listening function
 
