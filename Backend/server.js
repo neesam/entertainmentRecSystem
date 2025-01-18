@@ -47,18 +47,29 @@ app.post('/api/pipeline', async (req, res) => {
 
     const python = spawn(`${PYTHON_PACKAGE}`, [`${PIPELINE_FILE_PATH}`]);
 
+    let responseSent = false;
+
     python.stdout.on('data', (data) => {
         console.log('Python output:', data.toString());
-        res.send(data.toString());
+        if(!responseSent) {
+            responseSent = true;
+            res.send(data.toString());
+        }
     })
 
     python.on('close', (code) => {
-        console.log(`child process close all stdio with code ${code}`);
+        if (!responseSent) {
+            responseSent = true;
+            res.status(500).send(`Python process finished with code: ${code}`);
+        }
     })
 
     python.stderr.on('data', (data) => {
         console.error('Error from Python:', data.toString());
-        res.status(500).send(`Error running Python script: ${data.toString()}`);
+        if (!responseSent) {
+            responseSent = true;
+            res.status(500).send(`Error running Python script: ${data.toString()}`);
+        }
     });
 })
 

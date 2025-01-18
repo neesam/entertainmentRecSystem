@@ -16,12 +16,19 @@ load_dotenv()
 
 BQ_SERVICE_ACCOUNT = os.getenv('BQ_SERVICE_ACCOUNT')
 BQ_PROJECT = os.getenv('BQ_PROJECT')
+
 METADATA_DATASET= os.getenv('METADATA_DATASET')
-QUEUE_TABLE = os.getenv('QUEUE_TABLE')
-MUSIC_METADATA_TABLE = os.getenv('MUSIC_METADATA_TABLE')
+
 TMDB_API_KEY = os.getenv('TMDB_API_KEY')
+GOOGLE_BOOKS_API_KEY = os.getenv('GOOGLE_BOOKS_API_KEY')
+
 FILM_METADATA_TABLE = os.getenv('FILM_METADATA_TABLE')
+FILM_RECS_METADATA_TABLE = os.getenv('FILM_RECS_METADATA_TABLE')
 SHOW_METADATA_TABLE = os.getenv('SHOW_METADATA_TABLE')
+SHOW_RECS_METADATA_TABLE = os.getenv('SHOW_RECS_METADATA_TABLE')
+MUSIC_METADATA_TABLE = os.getenv('MUSIC_METADATA_TABLE')
+BOOK_METADATA_TABLE = os.getenv('BOOK_METADATA_TABLE')
+QUEUE_TABLE = os.getenv('QUEUE_TABLE')
 
 # SPOTIFY API
 
@@ -164,7 +171,6 @@ def apiCalls(data):
 
             artist_id = getAlbumData()
             getArtistData(artist_id)
-
         elif i[2] == 'film':
             film_title = i[1]
 
@@ -202,11 +208,13 @@ def apiCalls(data):
                     if data['results']:
                         # Get the first movie from the results
                         movie = data['results'][0]
-                        
+
                         title = movie['title']
+                        id = movie['id']
                         overview = movie['overview']
                         release_date = movie['release_date']
                         vote_avg = movie['vote_average']
+                        vote_count = movie['vote_count']
                         genres = movie['genre_ids']
                         poster_path = movie['poster_path']
                         url = f'https://image.tmdb.org/t/p/w500{poster_path}'
@@ -225,9 +233,9 @@ def apiCalls(data):
                             QUERY = f'''
                                 INSERT INTO
                                 `{METADATA_DATASET}.{FILM_METADATA_TABLE}`
-                                (title, overview, release_date, vote_avg, poster_url, genres)
+                                (title, overview, release_date, poster_path, genres, vote_avg, vote_count)
                                 VALUES
-                                ('{title}', "{overview}", '{release_date}', '{vote_avg}', '{url}', {genres_list})
+                                ('{title}', "{overview}", '{release_date}', '{url}', {genres_list}, '{vote_avg}', '{vote_count}')
                             '''
 
                             print(QUERY)
@@ -237,6 +245,50 @@ def apiCalls(data):
 
                         except Exception as e:
                             print(f"Error executing query: {e}")
+
+                        url = f'https://api.themoviedb.org/3/movie/{id}/recommendations?api_key={TMDB_API_KEY}'
+                        response = requests.get(url)
+                        data = response.json()
+                        
+                        if data['results']:
+                            for i in data['results']:
+                                title = i['title']
+                                overview = i['overview']
+                                poster_path = i['poster_path']
+                                url = f'https://image.tmdb.org/t/p/w500{poster_path}'
+                                genres = i['genre_ids']
+                                release_date = i['release_date']
+                                vote_avg = i['vote_average']
+                                vote_count = i['vote_count']
+
+                                genres_list = []
+
+                                for i, j in genres_map.items():
+                                    if i in genres:
+                                        genres_list.append(genres_map[i])
+
+                                try:
+                                    # Initialize BigQuery client with project ID and credentials
+                                    client = bigquery.Client.from_service_account_json(f"{BQ_SERVICE_ACCOUNT}", project=f"{BQ_PROJECT}")
+
+                                    # Define the query
+                                    QUERY = f'''
+                                        INSERT INTO
+                                        `{METADATA_DATASET}.{FILM_RECS_METADATA_TABLE}`
+                                        (original_film_id, title, overview, poster_path, genres, release_date, vote_avg, vote_count)
+                                        VALUES
+                                        ('{id}', '{title}', "{overview}", '{url}', {genres_list}, '{release_date}', '{vote_avg}', '{vote_count}')
+                                    '''
+
+                                    print(QUERY)
+                                    # Run the query
+                                    query_job = client.query(QUERY)
+                                    query_job.result()
+
+                                except Exception as e:
+                                    print(f"Error executing query: {e}")
+                        else:
+                            print('No recommendations found.')
                     else:
                         print('No movies found.')
                 else:
@@ -265,68 +317,169 @@ def apiCalls(data):
                     print(f"Error: {response.status_code}")
                     return None
                 
-            genres_map = {
-                10759: 'Action & Adventure',
-                16: 'Animation',
-                35: 'Comedy',
-                80: 'Crime',
-                99: 'Documentary',
-                18: 'Drama',
-                10751: 'Family',
-                10762: 'Kids',
-                9648: 'Mystery',
-                10763: 'News',
-                10764: 'Reality',
-                10765: 'Science Fiction & Fantasy',
-                10766: 'Soap',
-                10767: 'Talk',
-                10768: 'War & Politics',
-                37: 'Western'
-            }
-                
-            api_key = TMDB_API_KEY # Replace with your actual TMDb API key
-            query = show_title  # The TV show you're searching for
+            def getShowDetails():
 
-            tv_show = search_tv_show(api_key, query)
+                genres_map = {
+                    10759: 'Action & Adventure',
+                    16: 'Animation',
+                    35: 'Comedy',
+                    80: 'Crime',
+                    99: 'Documentary',
+                    18: 'Drama',
+                    10751: 'Family',
+                    10762: 'Kids',
+                    9648: 'Mystery',
+                    10763: 'News',
+                    10764: 'Reality',
+                    10765: 'Science Fiction & Fantasy',
+                    10766: 'Soap',
+                    10767: 'Talk',
+                    10768: 'War & Politics',
+                    37: 'Western'
+                }
+                    
+                api_key = TMDB_API_KEY # Replace with your actual TMDb API key
+                query = show_title  # The TV show you're searching for
 
-            title = tv_show['name']
-            overview = tv_show['overview']
-            overview_cleaned = overview.replace("\n", " ")
-            first_air_date = tv_show['first_air_date']
-            vote_avg = tv_show['vote_average']
-            poster_path = tv_show['poster_path']
-            poster_url = f'https://image.tmdb.org/t/p/w500{poster_path}'
-            genres = tv_show['genre_ids']
+                tv_show = search_tv_show(api_key, query)
 
-            genres_list = []
+                if tv_show:
+                    id = tv_show['id']
+                    title = tv_show['name']
+                    overview = tv_show['overview']
+                    overview_cleaned = overview.replace("\n", " ")
+                    first_air_date = tv_show['first_air_date']
+                    vote_avg = tv_show['vote_average']
+                    poster_path = tv_show['poster_path']
+                    poster_url = f'https://image.tmdb.org/t/p/w500{poster_path}'
+                    genres = tv_show['genre_ids']
 
-            for i, j in genres_map.items():
-                if i in genres:
-                    genres_list.append(genres_map[i])
+                    genres_list = []
 
-            try:
-                # Initialize BigQuery client with project ID and credentials
-                client = bigquery.Client.from_service_account_json(f"{BQ_SERVICE_ACCOUNT}", project=f"{BQ_PROJECT}")
+                    for i, j in genres_map.items():
+                        if i in genres:
+                            genres_list.append(genres_map[i])
 
-                # Define the query
-                QUERY = f'''
-                    INSERT INTO
-                    `{METADATA_DATASET}.{SHOW_METADATA_TABLE}`
-                    (title, overview, first_air_date, vote_avg, poster_url, genres)
-                    VALUES
-                    ('{title}', "{overview_cleaned}", '{first_air_date}', '{vote_avg}', '{poster_url}', {genres_list})
-                '''
-                print(QUERY)
-                # Run the query
-                query_job = client.query(QUERY)
-                query_job.result()
+                    if '"' in overview_cleaned:
+                        overview_cleaned = overview_cleaned.replace('"', '\\"')
 
-            except Exception as e:
-                print(f"Error executing query: {e}")
+                    try:
+                        # Initialize BigQuery client with project ID and credentials
+                        client = bigquery.Client.from_service_account_json(f"{BQ_SERVICE_ACCOUNT}", project=f"{BQ_PROJECT}")
+
+                        # Define the query
+                        QUERY = f'''
+                            INSERT INTO
+                            `{METADATA_DATASET}.{SHOW_METADATA_TABLE}`
+                            (title, overview, first_air_date, vote_avg, poster_url, genres)
+                            VALUES
+                            ('{title}', "{overview_cleaned}", '{first_air_date}', '{vote_avg}', '{poster_url}', {genres_list})
+                        '''
+                        print(QUERY)
+                        # Run the query
+                        query_job = client.query(QUERY)
+                        query_job.result()
+
+                    except Exception as e:
+                        print(f"Error executing query: {e}")
+
+                    url = f'https://api.themoviedb.org/3/tv/{id}/recommendations?api_key={TMDB_API_KEY}&total_results=10'
+                    response = requests.get(url)
+                    data = response.json()
+                    
+                    if data['results']:
+                        for i in data['results']:
+                            title = i['name']
+                            overview = i['overview']
+                            overview_cleaned = overview.replace("\n", " ")
+                            poster_path = i['poster_path']
+                            url = f'https://image.tmdb.org/t/p/w500{poster_path}'
+                            genres = i['genre_ids']
+                            release_date = i['first_air_date']
+                            vote_avg = i['vote_average']
+                            vote_count = i['vote_count']
+
+                            genres_list = []
+
+                            for i, j in genres_map.items():
+                                if i in genres:
+                                    genres_list.append(genres_map[i])
+
+                            if '"' in overview_cleaned:
+                                overview_cleaned = overview_cleaned.replace('"', '\\"')
+
+                            try:
+                                # Initialize BigQuery client with project ID and credentials
+                                client = bigquery.Client.from_service_account_json(f"{BQ_SERVICE_ACCOUNT}", project=f"{BQ_PROJECT}")
+
+                                # Define the query
+                                QUERY = f'''
+                                    INSERT INTO
+                                    `{METADATA_DATASET}.{SHOW_RECS_METADATA_TABLE}`
+                                    (original_show_id, title, overview, poster_path, genres, release_date, vote_avg, vote_count)
+                                    VALUES
+                                    ('{id}', '{title}', "{overview_cleaned}", '{url}', {genres_list}, '{release_date}', '{vote_avg}', '{vote_count}')
+                                '''
+
+                                print(QUERY)
+                                # Run the query
+                                query_job = client.query(QUERY)
+                                query_job.result()
+
+                            except Exception as e:
+                                print(f"Error executing query: {e}")
+                    else:
+                        print('No recommendations found.')
+                else:
+                    print('No show found.')
+            getShowDetails()
         else:
-            # google books api
-            print('book')
+            book_title = i[1]
 
+            def getBookDetails():
+
+                response = requests.get(f'https://www.googleapis.com/books/v1/volumes?q={book_title}&key={GOOGLE_BOOKS_API_KEY}')
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    item = data['items'][0]
+                    
+                    authors = item['volumeInfo']['authors']
+                    averageRating = item['volumeInfo']['averageRating']
+                    print(averageRating)
+                    genres = item['volumeInfo']['categories']
+                    description = item['volumeInfo']['imageLinks']['thumbnail']
+                    previewLink = item['accessInfo']['webReaderLink']
+                    title = item['volumeInfo']['title']
+                    subtitle = item['volumeInfo']['subtitle']
+                    pageCount = item['volumeInfo']['pageCount']
+
+                    if '"' in description:
+                        description = description.replace('"', '\\"')
+
+                    try:
+                        # Initialize BigQuery client with project ID and credentials
+                        client = bigquery.Client.from_service_account_json(f"{BQ_SERVICE_ACCOUNT}", project=f"{BQ_PROJECT}")
+
+                        # Define the query
+                        QUERY = f'''
+                            INSERT INTO
+                            `{METADATA_DATASET}.{BOOK_METADATA_TABLE}`
+                            (title, subtitle, authors, description, genres, avg_rating, page_count, preview_link)
+                            VALUES
+                            ('{title}', '{subtitle}', {authors}, "{description}", {genres}, '{averageRating}', '{pageCount}', '{previewLink}')
+                        '''
+                        print(QUERY)
+                        # Run the query
+                        query_job = client.query(QUERY)
+                        query_job.result()
+
+                    except Exception as e:
+                        print(f"Error executing query: {e}")
+                else:
+                    print(f"Failed to retrieve data. Status code: {response.status_code}")            
+
+            getBookDetails()
 def deleteFromQueue():
     try:
         # Initialize BigQuery client with project ID and credentials
