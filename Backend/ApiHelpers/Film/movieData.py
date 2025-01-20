@@ -1,5 +1,6 @@
 import os
 import requests
+from datetime import datetime, date
 
 from google.cloud import bigquery
 from dotenv import load_dotenv
@@ -61,6 +62,15 @@ def getMovieData(data):
             genres = movie['genre_ids']
             poster_path = movie['poster_path']
             url = f'https://image.tmdb.org/t/p/w500{poster_path}'
+            added_date = date.today()
+
+            release_date = datetime.strptime(release_date, "%Y-%m-%d")
+            formatted_release_date = release_date.strftime("%B %d, %Y")
+
+            formatted_added_date = added_date.strftime("%B %d, %Y")
+
+            if '"' in overview:
+                overview = overview.replace('"', '\\"')
 
             genres_list = []
 
@@ -76,9 +86,9 @@ def getMovieData(data):
                 QUERY = f'''
                     INSERT INTO
                     `{METADATA_DATASET}.{FILM_METADATA_TABLE}`
-                    (title, overview, release_date, poster_path, genres, vote_avg, vote_count)
+                    (title, overview, release_date, poster_path, genres, vote_avg, vote_count, added_date)
                     VALUES
-                    ('{title}', "{overview}", '{release_date}', '{url}', {genres_list}, '{vote_avg}', '{vote_count}')
+                    ('{title}', "{overview}", '{formatted_release_date}', '{url}', {genres_list}, '{vote_avg}', '{vote_count}', '{formatted_added_date}')
                 '''
 
                 print(QUERY)
@@ -104,6 +114,9 @@ def getMovieData(data):
                     vote_avg = i['vote_average']
                     vote_count = i['vote_count']
 
+                    release_date = datetime.strptime(release_date, "%Y-%m-%d")
+                    formatted_release_date = release_date.strftime("%B %d, %Y")
+
                     genres_list = []
 
                     for i, j in genres_map.items():
@@ -120,7 +133,7 @@ def getMovieData(data):
                             `{METADATA_DATASET}.{FILM_RECS_METADATA_TABLE}`
                             (original_film_id, title, overview, poster_path, genres, release_date, vote_avg, vote_count)
                             VALUES
-                            ('{id}', '{title}', "{overview}", '{url}', {genres_list}, '{release_date}', '{vote_avg}', '{vote_count}')
+                            ('{id}', '{title}', "{overview}", '{url}', {genres_list}, '{formatted_release_date}', '{vote_avg}', '{vote_count}')
                         '''
 
                         print(QUERY)

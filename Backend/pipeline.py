@@ -8,28 +8,28 @@ from datetime import datetime
 from google.cloud import bigquery
 from dotenv import load_dotenv
 
-from ApiHelpers.Music import getAlbumData
-from ApiHelpers.Music import getArtistData
-from ApiHelpers.Film import getMovieData
-from ApiHelpers.Show import getShowDetails
-from ApiHelpers.Book import getBookDetails
-from Pipeline import extract
-from Pipeline import deleteFromQueue
+from ApiHelpers.Music.musicData import getAlbumData
+from ApiHelpers.Music.musicData import getArtistData
+from ApiHelpers.Film.movieData import getMovieData
+from ApiHelpers.Show.showData import getShowDetails
+from ApiHelpers.Book.bookDetails import getBookDetails
+from Pipeline.extractionLogic import extract
+from Pipeline.queueDelete import deleteFromQueue
 
 load_dotenv()
 
 def apiCalls(data):
     for i in data:
         if i[2] == 'album':
-            artist_id = getAlbumData.getAlbumData(i)
-            getArtistData.getArtistData(artist_id)
+            artist_id = getAlbumData(i)
+            getArtistData(artist_id)
         elif i[2] == 'film':            
-            getMovieData.getMovieData(i)
+            getMovieData(i)
         elif i[2] == 'show':
-            getShowDetails.getShowDetails(i)
+            getShowDetails(i)
         else:
-            getBookDetails.getBookDetails(i)
+            getBookDetails(i)
 
-data = extract.extract()
+data = extract()
 apiCalls(data)
-deleteFromQueue.deleteFromQueue()
+deleteFromQueue()

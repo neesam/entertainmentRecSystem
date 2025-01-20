@@ -101,3 +101,36 @@
 .album-release-date {
   font-size: small;
 }
+
+/* Full width and height modal with padding */
+.lt-full-size-modal .modal-dialog {
+  width: 50%;  /* Use 95% of the screen width */
+  max-width: 95%;
+  height: calc(100vh - 40px); /* Full screen height minus top and bottom margins */
+  margin: 20px auto;  /* Apply equal margin on top and bottom (20px each) */
+}
+
+.lt-full-size-modal .modal-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Modal body scrollable if content is too tall */
+.lt-full-size-modal .modal-body {
+  flex-grow: 1;
+  overflow-y: auto; /* Make body scrollable if content exceeds height */
+}
+
+/* Ensure that on small screens, the modal takes up most of the height */
+@media (max-width: 767px) {
+  .lt-full-size-modal .modal-dialog {
+    max-width: 100%;
+    width: 100%;
+    height: calc(100vh - 20px); /* Adjust for small screens, ensuring the modal isn't off-screen */
+    margin: 10px 0; /* Small margin for mobile */
+  }
+  .lt-full-size-modal .modal-body {
+    padding: 10px; /* More padding for mobile */
+  }
+}

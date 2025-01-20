@@ -1,14 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, act } from 'react';
 import { Modal, Button, Form, Nav, Tab, Row, Col } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 
 
-const CustomModal = ({ showModal, handleModalHide, handleModalClose, attributes, selectedOption, handleOptionChange }) => {
+const CustomModal = ({ showModal, handleModalHide }) => {
 
     const [allModalAlbums, setAllModalAlbums] = useState([])
     const [allModalFilms, setAllModalFilms] = useState([])
     const [allModalShows, setAllModalShows] = useState([])
     const [allModalBooks, setAllModalBooks] = useState([])
+
+    const [showFilmRecsModal, setShowFilmRecsModal] = useState(false)
+    const [activeFilmsRecs, setActiveFilmsRecs] = useState([])
 
     const [loading, setLoading] = useState(false);
 
@@ -112,6 +115,45 @@ const CustomModal = ({ showModal, handleModalHide, handleModalClose, attributes,
         }
     };
 
+    const handleFilmRecsModalOpen = async (id) => {
+        const response = await fetch(`http://localhost:5001/api/film_recs_metadata/${id}`)
+
+        if(!response.ok) {
+            console.log(`Couldn't fetch for movie: ${id}`)
+        }
+
+        const data = await response.json()
+        setActiveFilmsRecs(data)
+        console.log(activeFilmsRecs)
+
+        setShowFilmRecsModal(true);
+    }
+
+    // const handleFilmRecsModalHide = () => setShowFilmRecsModal(false)
+
+    // const handleFilmRecsModalClose = () => {
+    //     setShowFilmRecsModal(false);
+    // }
+
+    const handleShowRecsModalOpen = async (id) => {
+        const response = await fetch(`http://localhost:5001/api/film_recs_metadata/${id}`)
+
+        if(!response.ok) {
+            console.log(`Couldn't fetch for movie: ${id}`)
+        }
+
+        const data = await response.json()
+        setActiveFilmsRecs(data)
+
+        setShowFilmRecsModal(true);
+    }
+
+    const handleFilmRecsModalHide = () => setShowFilmRecsModal(false)
+
+    const handleFilmRecsModalClose = () => {
+        setShowFilmRecsModal(false);
+    }
+
     return (
     <Modal className={'full-size-modal'} show={showModal} onHide={handleModalHide} size="lg" centered>
         <Modal.Header closeButton>
@@ -167,9 +209,10 @@ const CustomModal = ({ showModal, handleModalHide, handleModalClose, attributes,
                                                 {album.artist_name}
                                             </a></Card.Subtitle>
                                         <Card.Subtitle className="text-muted mb-3 album-release-date">{album.release_date}</Card.Subtitle>
-                                        <div className='mb-1'>
+                                        <div className='mb-3'>
                                             {album.artist_genres.join(', ')}
                                         </div>
+                                        <Card.Subtitle className="text album-release-date">Added: {album.added_date}</Card.Subtitle>
                                     </Card.Body>
                                 </Card>
                             </Col>
@@ -189,14 +232,58 @@ const CustomModal = ({ showModal, handleModalHide, handleModalClose, attributes,
                                     {film.title}
                                 </Card.Title>
                                 <Card.Subtitle className="text-muted mb-2">{film.release_date}</Card.Subtitle>
-                                {/* <Card.Subtitle className="text-muted mb-3 album-release-date">{album.release_date}</Card.Subtitle> */}
-                                {/* {album.artist_genres.map((genre, index) => (
-                                    <Card.Subtitle className='mb-3'>{genre}</Card.Subtitle>
-                                ))} */}
-                                <div className='mb-2'>
+                                <div className='mb-3'>
                                     {film.genres.join(', ')}
                                 </div>
-                                <Button variant="primary">Get recommendations</Button>
+                                <Card.Subtitle className="text mb-2 album-release-date">Added: {film.added_date}</Card.Subtitle>
+                                <Button onClick={() => handleFilmRecsModalOpen(film.id)} variant="primary">Get recommendations</Button>
+                                    <Modal show={showFilmRecsModal} onHide={handleFilmRecsModalHide} size="lg" centered className='lt-full-size-modal'>
+                                        <Modal.Header closeButton>
+                                                <Modal.Title>
+                                                    Recommendations based off of {film.title}
+                                                </Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                        <Row>
+                                        {loading ? (
+                                            <p>Loading...</p>
+                                        ) : (activeFilmsRecs.map((film, index) => (
+                                            <Col key={index} sm={12} md={6} lg={4}>
+                                                <Card style={{ width: '18rem' }}>
+                                                        <Card.Img variant="top" src={film.poster_path}/>
+                                                    <Card.Body>
+                                                        {/* <Card.Title className="mb-2">
+                                                            <a 
+                                                                target='_blank' 
+                                                                href={album.album_url} 
+                                                                style={{textDecoration: 'none', color: 'black'}} rel="noreferrer">
+                                                                {album.album_name}
+                                                            </a>
+                                                        </Card.Title>
+                                                        <Card.Subtitle className="text-muted mb-2">
+                                                            <a 
+                                                                target='_blank' 
+                                                                href={album.artist_url}
+                                                                style={{textDecoration: 'none', color: 'black'}} rel="noreferrer">
+                                                                {album.artist_name}
+                                                            </a></Card.Subtitle>
+                                                        <Card.Subtitle className="text-muted mb-3 album-release-date">{album.release_date}</Card.Subtitle>
+                                                        <div className='mb-3'>
+                                                            {album.artist_genres.join(', ')}
+                                                        </div>
+                                                        <Card.Subtitle className="text album-release-date">Added: {album.added_date}</Card.Subtitle> */}
+                                                    </Card.Body>
+                                                </Card>
+                                            </Col>
+                                        )))}
+                                        </Row>
+                                        </Modal.Body>
+                                        <Modal.Footer>
+                                            <Button variant="secondary" onClick={handleFilmRecsModalClose}>
+                                                Close
+                                            </Button>
+                                        </Modal.Footer>
+                                    </Modal>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -216,9 +303,10 @@ const CustomModal = ({ showModal, handleModalHide, handleModalClose, attributes,
                                         {show.title}
                                 </Card.Title>
                                 <Card.Subtitle className="text-muted mb-3">First air date: {show.first_air_date}</Card.Subtitle>
-                                <div className='mb-2'>
+                                <div className='mb-3'>
                                     {show.genres.join(', ')}
                                 </div>
+                                <Card.Subtitle className="text mb-2 album-release-date">Added: {show.added_date}</Card.Subtitle>
                                 <Button variant="primary">Get recommendations</Button>
                             </Card.Body>
                         </Card>
@@ -245,6 +333,7 @@ const CustomModal = ({ showModal, handleModalHide, handleModalClose, attributes,
                                 <div className='mb-2'>
                                     {book.genres.join(', ')}
                                 </div>
+                                <Card.Subtitle className="text mb-2 album-release-date">Added: {book.added_date}</Card.Subtitle>
                                 <Button variant="primary">Get recommendations</Button>
                             </Card.Body>
                         </Card>

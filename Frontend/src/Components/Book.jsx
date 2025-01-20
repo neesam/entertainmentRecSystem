@@ -76,12 +76,17 @@ const Book = ({isStaticMode}) => {
                 'harlan ellison'
             ]
 
-            console.log(`-----> ${whichTable}, ${data[0]['id']}`)
+            console.log(`-----> ${whichTable}, ${data[0]['id']}`)       
 
             if(anthologies.includes(data[0]['title'])) {
+                const getRandomInt =(min, max) => {
+                    const minCeiled = Math.ceil(min);
+                    const maxFloored = Math.floor(max);
+                    return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
+                }       
                 setBookID(data[0]['id'])
-                setBook(data[0]['title'] + ' ' + Math.floor(Math.random(1) * 5))
-                localStorage.setItem('book', data[0]['title'] + ' ' + Math.floor(Math.random(1) * 5))
+                setBook(data[0]['title'] + ' ' + getRandomInt(2, 5))
+                localStorage.setItem('book', data[0]['title'] + ' ' + getRandomInt(2, 5))
                 localStorage.setItem('bookID', bookID)
             } else if((whichTable === 'penguin_modern' || whichTable === 'penguin_classics')) {
                 console.log(data[0]['id'])

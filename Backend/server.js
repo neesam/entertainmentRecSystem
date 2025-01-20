@@ -14,6 +14,7 @@ const METADATA_DATASET = process.env.METADATA_DATASET;
 const QUEUE_TABLE = process.env.QUEUE_TABLE;
 const MUSIC_METADATA_TABLE = process.env.MUSIC_METADATA_TABLE;
 const FILM_METADATA_TABLE = process.env.FILM_METADATA_TABLE;
+const FILM_RECS_METADATA_TABLE = process.env.FILM_RECS_METADATA_TABLE;
 const SHOW_METADATA_TABLE = process.env.SHOW_METADATA_TABLE;
 const BOOK_METADATA_TABLE = process.env.BOOK_METADATA_TABLE;
 
@@ -1009,6 +1010,21 @@ app.get('/api/book_metadata_all', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
+// Metadata: recs
+
+app.get('/api/film_recs_metadata/:id', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${METADATA_DATASET}.${FILM_RECS_METADATA_TABLE}`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+})
 
 
 // server listening function

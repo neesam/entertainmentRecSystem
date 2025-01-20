@@ -1,5 +1,6 @@
 import os
 import requests
+from datetime import date
 
 from dotenv import load_dotenv
 from google.cloud import bigquery
@@ -30,6 +31,10 @@ def getBookDetails(data):
         previewLink = item['accessInfo']['webReaderLink']
         title = item['volumeInfo']['title']
         pageCount = item['volumeInfo']['pageCount']
+        added_date = date.today()
+
+        formatted_added_date = added_date.strftime("%B %d, %Y")
+
 
         if '"' in description:
             description = description.replace('"', '\\"')
@@ -42,9 +47,9 @@ def getBookDetails(data):
             QUERY = f'''
                 INSERT INTO
                 `{METADATA_DATASET}.{BOOK_METADATA_TABLE}`
-                (title, authors, description, genres, page_count, preview_link)
+                (title, authors, description, genres, page_count, preview_link, added_date)
                 VALUES
-                ('{title}', {authors}, "{description}", {genres}, '{pageCount}', '{previewLink}')
+                ('{title}', {authors}, "{description}", {genres}, '{pageCount}', '{previewLink}', '{formatted_added_date}')
             '''
             print(QUERY)
             # Run the query
