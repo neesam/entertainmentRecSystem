@@ -186,7 +186,7 @@ const Film = ({isStaticMode}) => {
                     tables: tables, 
                     table: whichTable }}
                 clickFunction={getFilm}
-                submitForm={getFromSpecificTable}
+                submitTablesForm={getFromSpecificTable}
                 deleteFunction={deleteFilm}
                 addToQueue={addToQueue}
             />

@@ -26,7 +26,7 @@ const Book = ({isStaticMode}) => {
         setBook(bookValue)
 
         const bookIDValue = localStorage.getItem('bookID')
-        setBook(bookIDValue)
+        setBookID(bookIDValue)
 
         const bookBackgroundColor = localStorage.getItem('bookBackgroundColor');
         setBackgroundColor(bookBackgroundColor)

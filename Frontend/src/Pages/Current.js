@@ -52,7 +52,9 @@ const Current = () => {
             });
     };
 
-    const handlesModalOpen = () => setShowModal(true);
+    const handlesModalOpen = async () => { 
+        setShowModal(true);
+    }
 
     const handleModalHide = () => setShowModal(false)
 

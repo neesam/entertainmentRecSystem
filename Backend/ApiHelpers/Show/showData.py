@@ -101,9 +101,9 @@ def getShowDetails(data):
         QUERY = f'''
             INSERT INTO
             `{METADATA_DATASET}.{SHOW_METADATA_TABLE}`
-            (title, overview, first_air_date, vote_avg, poster_url, genres, added_date)
+            (id, title, overview, first_air_date, vote_avg, poster_url, genres, added_date)
             VALUES
-            ('{title}', "{overview_cleaned}", '{formatted_first_air_date}', '{vote_avg}', '{poster_url}', {genres_list}, '{formatted_added_date}')
+            ('{id}', '{title}', "{overview_cleaned}", '{formatted_first_air_date}', '{vote_avg}', '{poster_url}', {genres_list}, '{formatted_added_date}')
         '''
         print(QUERY)
         # Run the query
@@ -113,53 +113,53 @@ def getShowDetails(data):
     except Exception as e:
         print(f"Error executing query: {e}")
 
-    # url = f'https://api.themoviedb.org/3/tv/{id}/recommendations?api_key={TMDB_API_KEY}&total_results=10'
-    # response = requests.get(url)
-    # data = response.json()
+    url = f'https://api.themoviedb.org/3/tv/{id}/recommendations?api_key={TMDB_API_KEY}&total_results=10'
+    response = requests.get(url)
+    data = response.json()
     
-    # if 'results' in data:
-    #     for i in data['results']:
-    #         title = i['name']
-    #         overview = i['overview']
-    #         overview_cleaned = overview.replace("\n", " ")
-    #         poster_path = i['poster_path']
-    #         url = f'https://image.tmdb.org/t/p/w500{poster_path}'
-    #         genres = i['genre_ids']
-    #         release_date = i['first_air_date']
-    #         vote_avg = i['vote_average']
-    #         vote_count = i['vote_count']
+    if 'results' in data:
+        for i in data['results']:
+            title = i['name']
+            overview = i['overview']
+            overview_cleaned = overview.replace("\n", " ")
+            poster_path = i['poster_path']
+            url = f'https://image.tmdb.org/t/p/w500{poster_path}'
+            genres = i['genre_ids']
+            release_date = i['first_air_date']
+            vote_avg = i['vote_average']
+            vote_count = i['vote_count']
 
-    #         release_date = datetime.strptime(release_date, "%Y-%m-%d")
-    #         formatted_release_date = release_date.strftime("%B %d, %Y")
+            release_date = datetime.strptime(release_date, "%Y-%m-%d")
+            formatted_release_date = release_date.strftime("%B %d, %Y")
 
-    #         genres_list = []
+            genres_list = []
 
-    #         for i, j in genres_map.items():
-    #             if i in genres:
-    #                 genres_list.append(genres_map[i])
+            for i, j in genres_map.items():
+                if i in genres:
+                    genres_list.append(genres_map[i])
 
-    #         if '"' in overview_cleaned:
-    #             overview_cleaned = overview_cleaned.replace('"', '\\"')
+            if '"' in overview_cleaned:
+                overview_cleaned = overview_cleaned.replace('"', '\\"')
 
-    #         try:
-    #             # Initialize BigQuery client with project ID and credentials
-    #             client = bigquery.Client.from_service_account_json(f"{BQ_SERVICE_ACCOUNT}", project=f"{BQ_PROJECT}")
+            try:
+                # Initialize BigQuery client with project ID and credentials
+                client = bigquery.Client.from_service_account_json(f"{BQ_SERVICE_ACCOUNT}", project=f"{BQ_PROJECT}")
 
-    #             # Define the query
-    #             QUERY = f'''
-    #                 INSERT INTO
-    #                 `{METADATA_DATASET}.{SHOW_RECS_METADATA_TABLE}`
-    #                 (original_show_id, title, overview, poster_path, genres, release_date, vote_avg, vote_count)
-    #                 VALUES
-    #                 ('{id}', '{title}', "{overview_cleaned}", '{url}', {genres_list}, '{formatted_release_date}', '{vote_avg}', '{vote_count}')
-    #             '''
+                # Define the query
+                QUERY = f'''
+                    INSERT INTO
+                    `{METADATA_DATASET}.{SHOW_RECS_METADATA_TABLE}`
+                    (original_show_id, title, overview, poster_path, genres, release_date, vote_avg, vote_count)
+                    VALUES
+                    ('{id}', '{title}', "{overview_cleaned}", '{url}', {genres_list}, '{formatted_release_date}', '{vote_avg}', '{vote_count}')
+                '''
 
-    #             print(QUERY)
-    #             # Run the query
-    #             query_job = client.query(QUERY)
-    #             query_job.result()
+                print(QUERY)
+                # Run the query
+                query_job = client.query(QUERY)
+                query_job.result()
 
-    #         except Exception as e:
-    #             print(f"Error executing query: {e}")
-    #     else:
-    #         print('No recommendations found.')
+            except Exception as e:
+                print(f"Error executing query: {e}")
+        else:
+            print('No recommendations found.')

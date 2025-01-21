@@ -106,7 +106,7 @@
 .lt-full-size-modal .modal-dialog {
   width: 50%;  /* Use 95% of the screen width */
   max-width: 95%;
-  height: calc(100vh - 40px); /* Full screen height minus top and bottom margins */
+  height: calc(100vh - 80px); /* Full screen height minus top and bottom margins */
   margin: 20px auto;  /* Apply equal margin on top and bottom (20px each) */
 }
 

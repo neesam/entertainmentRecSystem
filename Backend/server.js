@@ -16,6 +16,7 @@ const MUSIC_METADATA_TABLE = process.env.MUSIC_METADATA_TABLE;
 const FILM_METADATA_TABLE = process.env.FILM_METADATA_TABLE;
 const FILM_RECS_METADATA_TABLE = process.env.FILM_RECS_METADATA_TABLE;
 const SHOW_METADATA_TABLE = process.env.SHOW_METADATA_TABLE;
+const SHOW_RECS_METADATA_TABLE = process.env.SHOW_RECS_METADATA_TABLE;
 const BOOK_METADATA_TABLE = process.env.BOOK_METADATA_TABLE;
 
 const FILM_TABLES_DATASET = process.env.FILM_TABLES_DATASET;
@@ -1014,12 +1015,51 @@ app.get('/api/book_metadata_all', async (req, res) => {
 // Metadata: recs
 
 app.get('/api/film_recs_metadata/:id', async (req, res) => {
-    const sqlQuery = `select * from ${BQ_PROJECT}.${METADATA_DATASET}.${FILM_RECS_METADATA_TABLE}`
+
+    const filmId = req.params.id;
+    
+    const sqlQuery = `select * from ${BQ_PROJECT}.${METADATA_DATASET}.${FILM_RECS_METADATA_TABLE} WHERE original_film_id = @filmId`
 
     try {
-        const [rows] = await bigquery.query({ query: sqlQuery });
-        res.json(rows)
-        console.log(rows)
+        // Running the BigQuery query with parameterized query
+        const options = {
+            query: sqlQuery,
+            params: { filmId: filmId }, // Use the parsed ID as a parameter
+        };
+        const [rows] = await bigquery.query(options);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Film recommendations not found');
+        }
+
+        // Send the results back as JSON
+        res.json(rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
+app.get('/api/show_recs_metadata/:id', async (req, res) => {
+
+    const showId = req.params.id;
+    
+    const sqlQuery = `select * from ${BQ_PROJECT}.${METADATA_DATASET}.${SHOW_RECS_METADATA_TABLE} WHERE original_show_id = @showId`
+
+    try {
+        // Running the BigQuery query with parameterized query
+        const options = {
+            query: sqlQuery,
+            params: { showId: showId }, // Use the parsed ID as a parameter
+        };
+        const [rows] = await bigquery.query(options);
+
+        if (rows.length === 0) {
+            return res.status(404).send('Show recommendations not found');
+        }
+
+        // Send the results back as JSON
+        res.json(rows);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');

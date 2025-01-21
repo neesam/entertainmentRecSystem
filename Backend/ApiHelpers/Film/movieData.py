@@ -86,9 +86,9 @@ def getMovieData(data):
                 QUERY = f'''
                     INSERT INTO
                     `{METADATA_DATASET}.{FILM_METADATA_TABLE}`
-                    (title, overview, release_date, poster_path, genres, vote_avg, vote_count, added_date)
+                    (id, title, overview, release_date, poster_path, genres, vote_avg, vote_count, added_date)
                     VALUES
-                    ('{title}', "{overview}", '{formatted_release_date}', '{url}', {genres_list}, '{vote_avg}', '{vote_count}', '{formatted_added_date}')
+                    ('{id}', '{title}', "{overview}", '{formatted_release_date}', '{url}', {genres_list}, '{vote_avg}', '{vote_count}', '{formatted_added_date}')
                 '''
 
                 print(QUERY)
@@ -145,6 +145,41 @@ def getMovieData(data):
                         print(f"Error executing query: {e}")
             else:
                 print('No recommendations found.')
+
+            url = f'https://api.themoviedb.org/3/movie/{id}?api_key={TMDB_API_KEY}'
+            response = requests.get(url)
+            data = response.json()
+            
+            if data:
+                budget = data['budget']
+                imdb_id = data['imdb_id']
+                production_companies = data['production_companies']
+                runtime = data['runtime']
+
+                prod_company_names = []
+
+                for i in production_companies:
+                    prod_company_names.append(i['name'])
+
+                try:
+                        # Initialize BigQuery client with project ID and credentials
+                        client = bigquery.Client.from_service_account_json(f"{BQ_SERVICE_ACCOUNT}", project=f"{BQ_PROJECT}")
+
+                        # Define the query
+                        QUERY = f'''
+                            UPDATE
+                            `{METADATA_DATASET}.{FILM_METADATA_TABLE}`
+                            SET budget = '{budget}', imdb_id = '{imdb_id}', production_companies = {prod_company_names}, runtime = '{runtime}'
+                            WHERE id = '{id}'
+                        '''
+
+                        print(QUERY)
+                        # Run the query
+                        query_job = client.query(QUERY)
+                        query_job.result()
+
+                except Exception as e:
+                    print(f"Error executing query: {e}")
         else:
             print('No movies found.')
     else:
