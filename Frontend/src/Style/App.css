@@ -104,7 +104,7 @@
 
 /* Full width and height modal with padding */
 .lt-full-size-modal .modal-dialog {
-  width: 50%;  /* Use 95% of the screen width */
+  width: 60%;  /* Use 95% of the screen width */
   max-width: 95%;
   height: calc(100vh - 80px); /* Full screen height minus top and bottom margins */
   margin: 20px auto;  /* Apply equal margin on top and bottom (20px each) */
@@ -127,7 +127,7 @@
   .lt-full-size-modal .modal-dialog {
     max-width: 100%;
     width: 100%;
-    height: calc(100vh - 20px); /* Adjust for small screens, ensuring the modal isn't off-screen */
+    height: calc(100vh - 80px); /* Adjust for small screens, ensuring the modal isn't off-screen */
     margin: 10px 0; /* Small margin for mobile */
   }
   .lt-full-size-modal .modal-body {

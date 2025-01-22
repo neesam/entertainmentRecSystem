@@ -233,8 +233,8 @@ const CustomModal = ({ showModal, handleModalHide }) => {
                     <p>Loading...</p>
                 ) : (allModalFilms.map((film, index) => (
                     <Col key={index} sm={12} md={6} lg={4}>
-                        <Card style={{ width: '18rem' }}>
-                            <a target="_blank" href={`http://imdb.com/title/${film.imdb_id}`}>
+                        <Card style={{ width: '18rem', marginBottom: '20px' }}>
+                            <a target="_blank" href={`http://imdb.com/title/${film.imdb_id}`} rel="noreferrer">
                                 <Card.Img variant="top" src={film.poster_path}/>
                             </a>
                             <Card.Body>
@@ -263,7 +263,7 @@ const CustomModal = ({ showModal, handleModalHide }) => {
                         <p>Loading...</p>
                     ) : (activeFilmsRecs.map((film, index) => (
                         <Col key={index} sm={12} md={6} lg={4}>
-                            <Card style={{ width: '18rem' }}>
+                            <Card style={{ width: '18rem', marginBottom: '20px' }}>
                                     <Card.Img variant="top" src={film.poster_path}/>
                                 <Card.Body>
                                 </Card.Body>
@@ -286,7 +286,7 @@ const CustomModal = ({ showModal, handleModalHide }) => {
                     <p>Loading...</p>
                 ) : (allModalShows.map((show, index) => (
                     <Col key={index} sm={12} md={6} lg={4}>
-                        <Card style={{ width: '18rem' }}>
+                        <Card style={{ width: '18rem', marginBottom: '20px' }}>
                             <Card.Img variant="top" src={show.poster_url}/>
                             <Card.Body>
                                 <Card.Title className="mb-2">
@@ -314,7 +314,7 @@ const CustomModal = ({ showModal, handleModalHide }) => {
                         <p>Loading...</p>
                     ) : (activeShowRecs.map((film, index) => (
                         <Col key={index} sm={12} md={6} lg={4}>
-                            <Card style={{ width: '18rem' }}>
+                            <Card style={{ width: '18rem', marginBottom: '20px' }}>
                                     <Card.Img variant="top" src={film.poster_path}/>
                                 <Card.Body>
                                 </Card.Body>

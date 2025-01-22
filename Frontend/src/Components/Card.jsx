@@ -23,6 +23,7 @@ const EntCard = ({
     const [showTablesModal, setShowTablesModal] = useState(false);
     const [showCirculationModal, setShowCirculationModal] = useState(false);
     const [selectedOption, setSelectedOption] = useState(""); // State for dropdown selection
+    const [showtableItemsModal, setShowtableItemsModal] = useState(false)
 
     const handleTablesModalOpen = () => setShowTablesModal(true);
 
@@ -33,6 +34,18 @@ const EntCard = ({
             submitTablesForm(selectedOption);
         }
         setShowTablesModal(false);
+    }
+
+    const handleTableItemsModalOpen = async () => {
+        setShowtableItemsModal(true)
+    }
+
+    const handleTableItemsModalHide = async () => {
+        setShowtableItemsModal(false)
+    }
+
+    const handleTableItemsModalClose = async () => {
+        setShowtableItemsModal(false)
     }
 
     // const handleCirculationModalOpen = () => {
@@ -106,7 +119,7 @@ const EntCard = ({
 
                 <Card.Body>
                     <Card.Title>{attributes.title}</Card.Title>
-                    <Card.Title style={{fontSize: '10px'}}>{attributes.table}</Card.Title>
+                    <Card.Title style={{fontSize: '10px'}}><a onClick={handleTableItemsModalOpen}>{attributes.table}</a></Card.Title>
                 </Card.Body>
                 <div>
                     <Button
@@ -130,39 +143,6 @@ const EntCard = ({
                     ) : <></>}
                 </div>
             </Card>
-
-            {/* {attributes.type === 'album' ? (
-                <Modal show={showCirculationModal} onHide={handleCirculationModalHide}>
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        Albums in circulation
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                <Form>
-                        <Form.Group controlId="formDropdown">
-                            <Form.Label>Choose an album</Form.Label>
-                            <Form.Control as="select" value={selectedOption} onChange={handleOptionChange}>
-                                <option value="">-- Select an option --</option>
-                                {attributes.allInCirculation.map((title, index) => (
-                                    <option key={index} value={title}>
-                                        {title}
-                                    </option>
-                                ))}
-                            </Form.Control>
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCirculationModalHide}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={handleCirculationModalClose}>
-                        Set album
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            ) : <></>} */}
 
             <Modal show={showTablesModal} onHide={handleTablesModalHide}>
                 <Modal.Header closeButton>
@@ -195,6 +175,41 @@ const EntCard = ({
                         Close
                     </Button>
                     <Button variant="primary" onClick={handleTablesModalClose}>
+                        Get {attributes.type}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={showtableItemsModal} onHide={handleTableItemsModalHide}>
+                <Modal.Header closeButton>
+                    {attributes.type === 'album' ? (
+                        <Modal.Title>
+                        Get an {attributes.type} from a specific table
+                        </Modal.Title>
+                    ) : 
+                        <Modal.Title>
+                        Get a {attributes.type} from a specific table
+                        </Modal.Title>}
+                </Modal.Header>
+                <Modal.Body>
+                <Form>
+                        <Form.Group controlId="formDropdown">
+                            <Form.Label>Choose an Option</Form.Label>
+                            <Form.Control as="select" value={selectedOption} onChange={handleOptionChange}>
+                                <option value="">-- Select an option --</option>
+                                {attributes.tables.map((table, index) => (
+                                    <option key={index} value={table}>
+                                        {table}
+                                    </option>
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleTableItemsModalHide}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleTableItemsModalClose}>
                         Get {attributes.type}
                     </Button>
                 </Modal.Footer>
