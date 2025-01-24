@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { useState } from 'react';
 
 import React from 'react';
 
@@ -13,17 +12,16 @@ const EntCard = ({
         clickFunction, 
         deleteFunction, 
         addToCirculation, 
-        allInCirculation, 
         addToQueue, 
         attributes, 
         submitTablesForm,
-        submitCirculationForm
     }) => {
         
     const [showTablesModal, setShowTablesModal] = useState(false);
-    const [showCirculationModal, setShowCirculationModal] = useState(false);
     const [selectedOption, setSelectedOption] = useState(""); // State for dropdown selection
-    const [showtableItemsModal, setShowtableItemsModal] = useState(false)
+    const [showTableItemsModal, setShowTableItemsModal] = useState(false)
+    const [activeTable, setActiveTable] = useState(null)
+    const [activeTableEntries, setActiveTableEntries] = useState([])
 
     const handleTablesModalOpen = () => setShowTablesModal(true);
 
@@ -36,30 +34,130 @@ const EntCard = ({
         setShowTablesModal(false);
     }
 
-    const handleTableItemsModalOpen = async () => {
-        setShowtableItemsModal(true)
+    const handleTableItemsModalOpen = async (table) => {
+        setActiveTable(table)
+
+        if(table.includes('album') || table.includes('artist')) {
+            try {
+                const response = await fetch(`http://localhost:5001/api/all_from_selected_music_table/${table}`)
+                const data = await response.json()
+                setActiveTableEntries(data)
+            } catch (error) {
+                console.log(error)
+            }
+        } else if(table.includes('film')) {
+            try {
+                const response = await fetch(`http://localhost:5001/api/all_from_selected_film_table/${table}`)
+                const data = await response.json()
+                setActiveTableEntries(data)
+            } catch (error) {
+                console.log(error)
+            }
+        } else if(table.includes('anime') || table === 'shows') {
+            try {
+                const response = await fetch(`http://localhost:5001/api/all_from_selected_shows_table/${table}`)
+                const data = await response.json()
+                setActiveTableEntries(data)
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            try {
+                const response = await fetch(`http://localhost:5001/api/all_from_selected_book_table/${table}`)
+                const data = await response.json()
+                setActiveTableEntries(data)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        setShowTableItemsModal(true)
     }
 
     const handleTableItemsModalHide = async () => {
-        setShowtableItemsModal(false)
+        setShowTableItemsModal(false)
     }
 
-    const handleTableItemsModalClose = async () => {
-        setShowtableItemsModal(false)
+    const handleDeleteFromTable = async () => {
+        if(selectedOption) {
+            if(activeTable.includes('album') || activeTable.includes('artist')) {
+                try {
+                    const response = await fetch(`http://localhost:5001/api/delete_from_music_table/${activeTable}/${selectedOption}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-type': 'application/json' },
+                    });
+
+                    console.log(response)
+            
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`Delete failed: ${errorData.message || 'Unknown error'}`);
+                    }
+        
+                    console.log(await response.json());
+                    console.log('Deleted successfully.');
+                    
+                } catch (error) {
+                    console.error('Error during deletion:', error.message);
+                }
+            } else if(activeTable.includes('film')) {
+                try {
+                    const response = await fetch(`http://localhost:5001/api/delete_from_film_table/${activeTable}/${selectedOption}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-type': 'application/json' },
+                    });
+            
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`Delete failed: ${errorData.message || 'Unknown error'}`);
+                    }
+        
+                    console.log(await response.json());
+                    console.log('Deleted successfully.');
+                    
+                } catch (error) {
+                    console.error('Error during deletion:', error.message);
+                }
+            } else if(activeTable.includes('anime') || activeTable === 'shows') {
+                try {
+                    const response = await fetch(`http://localhost:5001/api/delete_from_shows_table/${activeTable}/${selectedOption}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-type': 'application/json' },
+                    });
+            
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`Delete failed: ${errorData.message || 'Unknown error'}`);
+                    }
+        
+                    console.log(await response.json());
+                    console.log('Deleted successfully.');
+                    
+                } catch (error) {
+                    console.error('Error during deletion:', error.message);
+                }
+            } else {
+                try {
+                    const response = await fetch(`http://localhost:5001/api/delete_from_book_table/${activeTable}/${selectedOption}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-type': 'application/json' },
+                    });
+            
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`Delete failed: ${errorData.message || 'Unknown error'}`);
+                    }
+        
+                    console.log(await response.json());
+                    console.log('Deleted successfully.');
+                    
+                } catch (error) {
+                    console.error('Error during deletion:', error.message);
+                }
+            }
+        }
+
+        setShowTableItemsModal(false)
     }
-
-    // const handleCirculationModalOpen = () => {
-    //     setShowCirculationModal(true);
-    // } 
-
-    // const handleCirculationModalHide = () => setShowCirculationModal(false)
-
-    // const handleCirculationModalClose = () => {
-    //     if (selectedOption) {
-    //         submitCirculationForm(selectedOption);
-    //     }
-    //     setShowCirculationModal(false);
-    // }
 
     const handleOptionChange = (event) => setSelectedOption(event.target.value);
 
@@ -79,31 +177,19 @@ const EntCard = ({
                 flexDirection: 'column',
                 position: 'relative' 
             }}>
-                <Button
-                    style={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: '10px',
-                        zIndex: 1
-                    }}
-                    variant="outline-secondary"
-                    onClick={handleTablesModalOpen}>
-                    &#9998; 
-                </Button>
-
-                {/* {attributes.type === 'album' ? (
+                {attributes.type !== 'book' ? (
                     <Button
                         style={{
                             position: 'absolute',
-                            top: '65px',
+                            top: '10px',
                             right: '10px',
                             zIndex: 1
                         }}
                         variant="outline-secondary"
-                        onClick={handleCirculationModalOpen}>
-                        &#x1F4BB; 
+                        onClick={handleTablesModalOpen}>
+                        &#9998; 
                     </Button>
-                ):<></>} */}
+                ) : <></>}
 
                 <Button
                     style={{
@@ -119,7 +205,7 @@ const EntCard = ({
 
                 <Card.Body>
                     <Card.Title>{attributes.title}</Card.Title>
-                    <Card.Title style={{fontSize: '10px'}}><a onClick={handleTableItemsModalOpen}>{attributes.table}</a></Card.Title>
+                    <Card.Title style={{fontSize: '10px'}}><a onClick={() => handleTableItemsModalOpen(attributes.table)}>{attributes.table}</a></Card.Title>
                 </Card.Body>
                 <div>
                     <Button
@@ -144,7 +230,8 @@ const EntCard = ({
                 </div>
             </Card>
 
-            <Modal show={showTablesModal} onHide={handleTablesModalHide}>
+            {attributes.type !== 'book' ? (
+                <Modal show={showTablesModal} onHide={handleTablesModalHide}>
                 <Modal.Header closeButton>
                     {attributes.type === 'album' ? (
                         <Modal.Title>
@@ -179,16 +266,13 @@ const EntCard = ({
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Modal show={showtableItemsModal} onHide={handleTableItemsModalHide}>
+            ) : <></>}
+
+            <Modal show={showTableItemsModal} onHide={handleTableItemsModalHide}>
                 <Modal.Header closeButton>
-                    {attributes.type === 'album' ? (
                         <Modal.Title>
-                        Get an {attributes.type} from a specific table
+                            All entries from {activeTable}
                         </Modal.Title>
-                    ) : 
-                        <Modal.Title>
-                        Get a {attributes.type} from a specific table
-                        </Modal.Title>}
                 </Modal.Header>
                 <Modal.Body>
                 <Form>
@@ -196,9 +280,9 @@ const EntCard = ({
                             <Form.Label>Choose an Option</Form.Label>
                             <Form.Control as="select" value={selectedOption} onChange={handleOptionChange}>
                                 <option value="">-- Select an option --</option>
-                                {attributes.tables.map((table, index) => (
-                                    <option key={index} value={table}>
-                                        {table}
+                                {activeTableEntries.map((entry, index) => (
+                                    <option key={index} value={entry.title}>
+                                        {entry.title}
                                     </option>
                                 ))}
                             </Form.Control>
@@ -206,11 +290,8 @@ const EntCard = ({
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleTableItemsModalHide}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={handleTableItemsModalClose}>
-                        Get {attributes.type}
+                    <Button variant="danger" onClick={handleDeleteFromTable}>
+                        Delete
                     </Button>
                 </Modal.Footer>
             </Modal>

@@ -38,6 +38,7 @@ const Album = ({isStaticMode}) => {
         'album_soundsofspotify',
         'album_tolisten',
         'album_vaporwave',
+        'album_vinyls',
         'album_waterloggedEars'
     ]
 

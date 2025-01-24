@@ -8,17 +8,9 @@ import randomColor from '../Helper/randomColor';
 
 const Book = ({isStaticMode}) => {
 
-    const [whichTable, setWhichTable] = useState('')
     const [book, setBook] = useState('')
     const [bookID, setBookID] = useState('')
-    const [tablesUsed, setTablesUsed] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
-
-    const tables = [
-        'book_toread',
-        'penguin_classics',
-        'penguin_modern'
-    ]
 
     useEffect(() => {
 
@@ -40,11 +32,10 @@ const Book = ({isStaticMode}) => {
 
     const getBook = async () => {
 
-        const fetchBookFromWhichTable = async (whichTable) => {
-            const response = await fetch(`http://localhost:5001/api/${whichTable}`)
+        const response = await fetch(`http://localhost:5001/api/book_toread`)
 
             if (!response.ok) {
-                throw new Error(`Failed to fetch details for book_toread`);
+                throw new Error(`Failed to fetch details`);
             }
 
             const data = await response.json()
@@ -76,8 +67,6 @@ const Book = ({isStaticMode}) => {
                 'harlan ellison'
             ]
 
-            console.log(`-----> ${whichTable}, ${data[0]['id']}`)       
-
             if(anthologies.includes(data[0]['title'])) {
                 const getRandomInt =(min, max) => {
                     const minCeiled = Math.ceil(min);
@@ -87,12 +76,6 @@ const Book = ({isStaticMode}) => {
                 setBookID(data[0]['id'])
                 setBook(data[0]['title'] + ' ' + getRandomInt(2, 5))
                 localStorage.setItem('book', data[0]['title'] + ' ' + getRandomInt(2, 5))
-                localStorage.setItem('bookID', bookID)
-            } else if((whichTable === 'penguin_modern' || whichTable === 'penguin_classics')) {
-                console.log(data[0]['id'])
-                setBookID(data[0]['id'])
-                setBook(whichTable + ' ' + bookID)
-                localStorage.setItem('book', whichTable + ' ' + bookID)
                 localStorage.setItem('bookID', data[0]['id'])
             } else {
                 setBookID(data[0]['id'])
@@ -107,86 +90,12 @@ const Book = ({isStaticMode}) => {
             setBackgroundColor(bgColor)
             localStorage.setItem('bookBackgroundColor', bgColor)
 
-    }
-
-        const fetchWhichTable = async () => {
-
-            let localTablesUsed = [...tablesUsed];
-
-            if (localTablesUsed.length === 3) {
-                localTablesUsed = []
-                setTablesUsed([])
-            }
-
-            let tableUsed = false
-
-            while (!tableUsed) {
-
-                const response = await fetch('http://localhost:5001/api/whichBookTable');
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch whichTable');
-                }
-
-                const data = await response.json()
-                const fetchedTable = data[0]['title']
-                console.log(fetchedTable)
-
-                if (!localTablesUsed.includes(fetchedTable)) {
-
-                    tableUsed = true
-
-                    setWhichTable(fetchedTable)
-
-                    localTablesUsed.push(fetchedTable);
-                    setTablesUsed(localTablesUsed);
-                    console.log('After update:', [...tablesUsed, fetchedTable]);
-
-                    localStorage.setItem('whichBookTable', fetchedTable)
-
-                    if (data.length > 0) {
-                        fetchBookFromWhichTable(fetchedTable); 
-                    }
-                }
-            }
-        }
-
-        fetchWhichTable()
-
-    }
-
-    const getFromSpecificTable = async (specificTable) => {
-        const response = await fetch(`http://localhost:5001/api/${specificTable}`)
-            if (!response.ok) {
-                throw new Error(`Failed to fetch details for ${specificTable}`);
-            }
-            const data = await response.json()
-
-            console.log(data)
-
-            if((specificTable === 'penguin_modern' || specificTable === 'penguin_classics')) {
-                setBookID(data[0]['id'])
-                setBook(specificTable + ' ' + bookID)
-                localStorage.setItem('book', specificTable + ' ' + bookID)
-                localStorage.setItem('bookID', bookID)
-            } else {
-                setBookID(data[0]['id'])
-                setBook(data[0]['title'])
-                localStorage.setItem('book', data[0]['title'])
-                localStorage.setItem('bookID', bookID)
-            }
-
-            // Logic to change background on each button press
-
-            const bgColor = randomColor()
-            setBackgroundColor(bgColor)
-            localStorage.setItem('bookBackgroundColor', bgColor)
     }
 
     const deleteBook = async () => {
         try {
         
-            const response = await fetch(`http://localhost:5001/api/books/${bookID}/${whichTable}`, {
+            const response = await fetch(`http://localhost:5001/api/book_toread/${bookID}`, {
                 method: 'DELETE',
                 headers: { 'Content-type': 'application/json' },
             });
@@ -241,9 +150,8 @@ const Book = ({isStaticMode}) => {
                     color: isStaticMode ? backgroundColor : 'beige', 
                     title: book, 
                     type: 'book', 
-                    tables: tables }}
+                }}
                 clickFunction={getBook}
-                submitForm={getFromSpecificTable}
                 deleteFunction={deleteBook}
                 addToQueue={addToQueue}
             />

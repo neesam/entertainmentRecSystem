@@ -539,6 +539,19 @@ app.get('/api/album_vaporwave', async (req, res) => {
     }
 });
 
+app.get('/api/album_vinyls', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_vinyls order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.get('/api/album_waterloggedEars', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_waterloggedEars order by rand() limit 1`
 
@@ -881,7 +894,9 @@ app.delete('/api/shows/:id', async (req, res) => {
 // books
 
 app.get('/api/book_toread', async (req, res) => {
-    const sqlQuery = `select * from ${BQ_PROJECT}.${BOOK_TABLES_DATASET}.book_toread order by rand() limit 1`
+    const sqlQuery = `select * from ${BQ_PROJECT}.${BOOK_TABLES_DATASET}.book_toread order by rand() * weight limit 1`
+
+    console.log(sqlQuery)
 
     try {
         const [rows] = await bigquery.query({ query: sqlQuery });
@@ -893,42 +908,12 @@ app.get('/api/book_toread', async (req, res) => {
     }
 })
 
-app.get('/api/penguin_classics', async (req, res) => {
-    const sqlQuery = `select * from ${BQ_PROJECT}.${BOOK_TABLES_DATASET}.penguin_classics order by rand() limit 1`
-
-    try {
-        const [rows] = await bigquery.query({ query: sqlQuery });
-        res.json(rows)
-        console.log(rows)
-    } catch (err) {
-        console.log(err.message);
-        res.status(500).send('Server Error')
-    }
-})
-
-app.get('/api/penguin_modern', async (req, res) => {
-    const sqlQuery = `select * from ${BQ_PROJECT}.${BOOK_TABLES_DATASET}.penguin_modern order by rand() limit 1`
-
-    try {
-        const [rows] = await bigquery.query({ query: sqlQuery });
-        res.json(rows)
-        console.log(rows)
-    } catch (err) {
-        console.log(err.message);
-        res.status(500).send('Server Error')
-    }
-})
-
-app.delete('/api/books/:id/:whichTable', async (req, res) => {
-    const id = parseInt(req.params.id);
-    const whichTable = req.params.whichTable;
-
-    console.log(`Received DELETE request for id: ${id} from table: ${whichTable}`);
-
+app.delete('/api/book_toread/:id', async (req, res) => {
+    const id = req.params.id;
 
     // Construct the query to delete the row
     const query = `
-        DELETE FROM \`${BQ_PROJECT}.${BOOK_TABLES_DATASET}.${whichTable}\`
+        DELETE FROM \`${BQ_PROJECT}.${BOOK_TABLES_DATASET}.book_toread\`
         WHERE id  = @id
     `;
 
@@ -944,10 +929,6 @@ app.delete('/api/books/:id/:whichTable', async (req, res) => {
         // Wait for the query to finish
         const [rows] = await job.getQueryResults();
         console.log('Rows affected:', rows);
-
-        if (rows.length === 0) {
-            return res.status(404).send('Film not found');
-        }
 
         res.status(200).send({ message: 'Book deleted successfully' });
     } catch (err) {
@@ -1066,6 +1047,187 @@ app.get('/api/show_recs_metadata/:id', async (req, res) => {
     }
 })
 
+// Get all for specific table
+
+app.get('/api/all_from_selected_music_table/:table', async (req, res) => {
+    const table = req.params.table;
+    
+    const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.${table}`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
+app.get('/api/all_from_selected_film_table/:table', async (req, res) => {
+    const table = req.params.table;
+    
+    const sqlQuery = `select * from ${BQ_PROJECT}.${FILM_TABLES_DATASET}.${table}`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
+app.get('/api/all_from_selected_shows_table/:table', async (req, res) => {
+    const table = req.params.table;
+    
+    const sqlQuery = `select * from ${BQ_PROJECT}.${SHOW_TABLES_DATASET}.${table}`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
+app.get('/api/all_from_selected_book_table/:table', async (req, res) => {
+    const table = req.params.table;
+    
+    const sqlQuery = `select * from ${BQ_PROJECT}.${BOOK_TABLES_DATASET}.${table}`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
+// Get for specific table
+
+app.delete('/api/delete_from_music_table/:table/:option', async (req, res) => {
+    const table = req.params.table;
+    const option = req.params.option;
+
+    const query = `
+        DELETE FROM \`${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.${table}\`
+        WHERE title  = @option
+    `;
+
+    console.log(query)
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { option },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        res.status(200).send({ message: 'Deleted successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.delete('/api/delete_from_film_table/:table/:option', async (req, res) => {
+    const table = req.params.table;
+    const option = req.params.option;
+
+    const query = `
+        DELETE FROM \`${BQ_PROJECT}.${FILM_TABLES_DATASET}.${table}\`
+        WHERE title  = @option
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { option },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        res.status(200).send({ message: 'Deleted successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.delete('/api/delete_from_shows_table/:table/:option', async (req, res) => {
+    const table = req.params.table;
+    const option = req.params.option;
+
+    const query = `
+        DELETE FROM \`${BQ_PROJECT}.${SHOW_TABLES_DATASET}.${table}\`
+        WHERE title  = @option
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { option },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        res.status(200).send({ message: 'Deleted successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.delete('/api/delete_from_book_table/:table/:option', async (req, res) => {
+    const table = req.params.table;
+    const option = req.params.option;
+
+    const query = `
+        DELETE FROM \`${BQ_PROJECT}.${BOOK_TABLES_DATASET}.${table}\`
+        WHERE title  = @option
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { option },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        res.status(200).send({ message: 'Deleted successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+});
 
 // server listening function
 

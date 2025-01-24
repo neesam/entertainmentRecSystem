@@ -117,6 +117,9 @@ def getMovieData(data):
                     release_date = datetime.strptime(release_date, "%Y-%m-%d")
                     formatted_release_date = release_date.strftime("%B %d, %Y")
 
+                    if '"' in overview:
+                        overview = overview.replace('"', '\\"')
+
                     genres_list = []
 
                     for i, j in genres_map.items():
