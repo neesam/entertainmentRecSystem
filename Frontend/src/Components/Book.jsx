@@ -141,7 +141,7 @@ const Book = ({isStaticMode}) => {
             autoClose: 2000,
             theme: "light",
             });
-      }
+    }
 
     return (
         <>
@@ -150,6 +150,7 @@ const Book = ({isStaticMode}) => {
                     color: isStaticMode ? backgroundColor : 'beige', 
                     title: book, 
                     type: 'book', 
+                    table: 'book_toread'
                 }}
                 clickFunction={getBook}
                 deleteFunction={deleteBook}

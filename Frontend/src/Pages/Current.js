@@ -14,11 +14,14 @@ import { ToastContainer, toast } from 'react-toastify';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import AddToTableModal from '../Components/AddToTableModal';
 
 const Current = () => {
 
     const [staticMode, setIsStaticMode] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [selectedOption, setSelectedOption] = useState(null)
+    const [showAddModal, setShowAddModal] = useState(false)
 
     useEffect(() => {
 
@@ -62,6 +65,20 @@ const Current = () => {
         setShowModal(false);
     }
 
+    const handleAddModalOpen = async () => { 
+        setShowAddModal(true);
+    }
+
+    const handleAddModalClose = () => {
+        setShowAddModal(false);
+    }
+
+
+
+    const addToCertainTable = async () => {
+        
+    }
+
     return (
     <>
         <button
@@ -79,6 +96,11 @@ const Current = () => {
             className="finished-button">
                 Finished content
         </button>
+        <button
+            onClick={handleAddModalOpen}
+            className="add-button">
+                Add to table
+        </button>
         <Album isStaticMode={staticMode}/>
         <Film isStaticMode={staticMode}/>
         <Show isStaticMode={staticMode}/>
@@ -86,8 +108,12 @@ const Current = () => {
         <CustomModal
             showModal={showModal}
             handleModalHide={handleModalHide}
-            handleModalClos={handleModalClose}
+            handleModalClose={handleModalClose}
         ></CustomModal>
+        <AddToTableModal
+            showModal={showAddModal}
+            handleModalClos={handleAddModalClose}
+        ></AddToTableModal>
         <ToastContainer></ToastContainer>
     </>
   );

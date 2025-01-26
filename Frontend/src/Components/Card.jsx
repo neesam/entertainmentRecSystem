@@ -74,6 +74,7 @@ const EntCard = ({
     }
 
     const handleTableItemsModalHide = async () => {
+        setSelectedOption(null)
         setShowTableItemsModal(false)
     }
 
@@ -161,6 +162,11 @@ const EntCard = ({
 
     const handleOptionChange = (event) => setSelectedOption(event.target.value);
 
+    function toGoogleSearchQuery(query) {
+        // Encode the string to make it URL safe
+        return 'https://www.google.com/search?q=' + encodeURIComponent(query);
+    }
+
     return (
         <div style={{
             display: 'flex',
@@ -204,7 +210,18 @@ const EntCard = ({
                 </Button>
 
                 <Card.Body>
-                    <Card.Title>{attributes.title}</Card.Title>
+                    <Card.Title>
+                    <a 
+                        target='_blank' 
+                        style={{
+                            textDecoration: 'none', 
+                            color: 'black'
+                        }} 
+                        href={toGoogleSearchQuery(attributes.title)} 
+                        rel="noreferrer">
+                            {attributes.title}
+                    </a>
+                    </Card.Title>
                     <Card.Title style={{fontSize: '10px'}}><a onClick={() => handleTableItemsModalOpen(attributes.table)}>{attributes.table}</a></Card.Title>
                 </Card.Body>
                 <div>

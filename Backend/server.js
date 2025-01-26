@@ -1229,6 +1229,132 @@ app.delete('/api/delete_from_book_table/:table/:option', async (req, res) => {
     }
 });
 
+// Add entry to table
+
+app.post('/api/add_to_music_table/:table/:entry', async (req, res) => {
+
+    const table = req.params.table;
+    const entry = req.params.entry;
+
+
+    const query = `
+        INSERT INTO \`${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.${table}\`
+        (id, title) VALUES (GENERATE_UUID(), @entry)
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { entry },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        res.status(200).send({ message: 'Entry added successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
+app.post('/api/add_to_film_table/:table/:entry', async (req, res) => {
+
+    const table = req.params.table;
+    const entry = req.params.entry;
+
+
+    const query = `
+        INSERT INTO \`${BQ_PROJECT}.${FILM_TABLES_DATASET}.${table}\`
+        (id, title) VALUES (GENERATE_UUID(), @entry)
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { entry },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        res.status(200).send({ message: 'Entry added successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
+app.post('/api/add_to_show_table/:table/:entry', async (req, res) => {
+
+    const table = req.params.table;
+    const entry = req.params.entry;
+
+
+    const query = `
+        INSERT INTO \`${BQ_PROJECT}.${SHOW_TABLES_DATASET}.${table}\`
+        (id, title) VALUES (GENERATE_UUID(), @entry)
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { entry },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        res.status(200).send({ message: 'Entry added successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
+app.post('/api/add_to_book_table/:table/:entry', async (req, res) => {
+
+    const table = req.params.table;
+    const entry = req.params.entry;
+
+
+    const query = `
+        INSERT INTO \`${BQ_PROJECT}.${BOOK_TABLES_DATASET}.${table}\`
+        (id, title, weight) VALUES (GENERATE_UUID(), @entry, 1)
+    `;
+
+    try {
+        // Run the query
+        const options = {
+            query,
+            params: { entry },
+        };
+        const [job] = await bigquery.createQueryJob(options);
+        console.log(`Job ${job.id} started.`);
+
+        // Wait for the query to finish
+        const [rows] = await job.getQueryResults();
+        console.log('Rows affected:', rows);
+
+        res.status(200).send({ message: 'Entry added successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
 // server listening function
 
 app.listen(port, () => {

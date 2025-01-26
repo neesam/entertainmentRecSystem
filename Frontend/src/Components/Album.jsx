@@ -14,7 +14,6 @@ const Album = ({isStaticMode}) => {
     const [inCirculation, setInCirculation] = useState('')
     const [originalTable, setOriginalTable] = useState('')
     const [tablesUsed, setTablesUsed] = useState([])
-    const [allInCirculation, setAllInCirculation] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
 
     const tables2 = [
@@ -69,27 +68,7 @@ const Album = ({isStaticMode}) => {
             localStorage.setItem('albumBackgroundColor', randColor);
         }
 
-        // getAllCirculation();
     }, []);
-
-    // const getAllCirculation = async () => {
-    //     const response = await fetch(`http://localhost:5001/api/album_incirculation_all`)
-
-    //     if (!response.ok) {
-    //         throw new Error(`Failed to fetch details for album_inCirculation`);
-    //     }
-
-    //     const data = await response.json()
-
-    //     let inCirculation = {};
-        
-    //     for(let i = 0; i < data.length; i++) {
-    //         inCirculation([data[i]['title'], data[i]['id']])
-    //     }
-
-    //     setAllInCirculation(inCirculation)
-    //     localStorage.setItem('allInCirculation', inCirculation)
-    // }
 
     const getAlbum = async () => {
 
@@ -303,13 +282,7 @@ const Album = ({isStaticMode}) => {
             autoClose: 2000,
             theme: "light",
             });
-    }
-
-    // const setAlbumToCirculation = async (album) => {
-    //     setAlbum(album[0])
-    //     setAlbumID(album[1])
-    // }
-    
+    }    
 
     return (
         <>
@@ -321,7 +294,6 @@ const Album = ({isStaticMode}) => {
                     tables: tables2, 
                     table: whichTable, 
                     inCirculation: inCirculation,
-                    allInCirculation: allInCirculation
                 }}
                 clickFunction={getAlbum}
                 submitTablesForm={getFromSpecificTable}
