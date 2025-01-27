@@ -16,7 +16,7 @@ const Album = ({isStaticMode}) => {
     const [tablesUsed, setTablesUsed] = useState([])
     const [backgroundColor, setBackgroundColor] = useState('')
 
-    const tables2 = [
+    const tables = [
         'album_allgenres',
         'album_bedroomAOR',
         'album_brokentransmission',
@@ -291,7 +291,7 @@ const Album = ({isStaticMode}) => {
                     color: isStaticMode ? backgroundColor : 'white', 
                     title: album, 
                     type: 'album', 
-                    tables: tables2, 
+                    tables: tables, 
                     table: whichTable, 
                     inCirculation: inCirculation,
                 }}

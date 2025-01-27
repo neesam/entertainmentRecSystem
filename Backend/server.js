@@ -737,8 +737,34 @@ app.get('/api/film_imdb250', async (req, res) => {
     }
 });
 
+app.get('/api/film_noir1000', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${FILM_TABLES_DATASET}.film_noir1000 order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.get('/api/film_towatch', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${FILM_TABLES_DATASET}.film_towatch order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/film_tspdt2500', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${FILM_TABLES_DATASET}.film_tspdt2500 order by rand() limit 1`
 
     try {
         const [rows] = await bigquery.query({ query: sqlQuery });

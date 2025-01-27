@@ -21,7 +21,9 @@ const Film = ({isStaticMode}) => {
         'film_towatch',
         'film_visualhypnagogia',
         'film_rymtop1500',
-        'film_criterion'
+        'film_criterion',
+        'film_noir1000',
+        'film_tspdt2500'
     ]
 
     useEffect(() => {
@@ -141,8 +143,10 @@ const Film = ({isStaticMode}) => {
 
             setFilm(data[0]['title'])
             setFilmID(data[0]['id'])
+            setWhichTable(specificTable)
             localStorage.setItem('film', data[0]['title'])
             localStorage.setItem('filmID', data[0]['id'])
+            localStorage.setItem('whichFilmTable', specificTable)
 
             // Logic to change background on each button press
 
