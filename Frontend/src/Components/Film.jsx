@@ -63,7 +63,7 @@ const Film = ({isStaticMode}) => {
 
             let localTablesUsed = [...tablesUsed];
 
-            if (localTablesUsed.length === 6) {
+            if (localTablesUsed.length === 8) {
                 localTablesUsed = []
                 setTablesUsed([])
             }
