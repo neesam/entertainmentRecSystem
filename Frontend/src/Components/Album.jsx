@@ -46,6 +46,7 @@ const Album = ({isStaticMode}) => {
         'album_slushwave',
         'album_soundsofspotify',
         'album_tolisten',
+        'artist_topartists',
         'album_vaporwave',
         'album_vhspop',
         'album_vinyls',

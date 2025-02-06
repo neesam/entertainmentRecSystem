@@ -18,7 +18,8 @@ const Show = ({isStaticMode}) => {
     const tables = [
         'shows',
         'anime_classic',
-        'anime_other'
+        'anime_other',
+        'shows_top50'
     ]
 
 

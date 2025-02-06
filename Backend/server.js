@@ -656,6 +656,19 @@ app.get('/api/album_tolisten', async (req, res) => {
     }
 });
 
+app.get('/api/artist_topartists', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.artist_topartists order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.get('/api/album_vaporwave', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_vaporwave order by rand() limit 1`
 
@@ -999,6 +1012,19 @@ app.delete('/api/film/:id/:whichTable', async (req, res) => {
 
 app.get('/api/shows', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${SHOW_TABLES_DATASET}.shows order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send('Server Error')
+    }
+})
+
+app.get('/api/shows_top50', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${SHOW_TABLES_DATASET}.shows_top50 order by rand() limit 1`
 
     try {
         const [rows] = await bigquery.query({ query: sqlQuery });
