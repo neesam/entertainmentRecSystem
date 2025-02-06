@@ -21,8 +21,10 @@ const Album = ({isStaticMode}) => {
         'album_ambientvaporwave',
         'album_barberbeats',
         'album_bedroomAOR',
+        'album_bodylinesources',
         'album_brokentransmission',
         'artist_classicalComposer',
+        'album_corpsources',
         'album_createdbyrejection',
         'album_deathdream',
         'album_emo',
@@ -34,6 +36,7 @@ const Album = ({isStaticMode}) => {
         'album_inCirculation',
         'album_indiepop',
         'album_latenightlofi',
+        'album_luxelitesources',
         'album_magicsheet',
         'album_mallsoft',
         'album_moenieandkitchie',
@@ -46,6 +49,7 @@ const Album = ({isStaticMode}) => {
         'album_vaporwave',
         'album_vhspop',
         'album_vinyls',
+        'album_waterfrontdiningsources',
         'album_waterloggedEars'
     ]
 
@@ -91,10 +95,16 @@ const Album = ({isStaticMode}) => {
 
             console.log(data[0]['id'])
 
-            setAlbum(data[0]['title'])
-            setAlbumID(data[0]['id'])
-            localStorage.setItem('album', data[0]['title'])
-            localStorage.setItem('albumID', data[0]['id'])
+            if(data[0]['link']) {
+                setAlbum(data[0]['link'])
+                localStorage.setItem('album', data[0]['link'])
+            } else {
+                setAlbum(data[0]['title'])
+                localStorage.setItem('album', data[0]['title'])
+                setAlbumID(data[0]['id'])
+                localStorage.setItem('albumID', data[0]['id'])
+            }
+
             setInCirculation('false')
             localStorage.setItem('in_circulation', 'false')
 
@@ -161,11 +171,17 @@ const Album = ({isStaticMode}) => {
 
             console.log(data)
 
-            setAlbum(data[0]['title'])
-            setAlbumID(data[0]['id'])
+            if(data[0]['link']) {
+                setAlbum(data[0]['link'])
+                localStorage.setItem('album', data[0]['link'])
+            } else {
+                setAlbum(data[0]['title'])
+                localStorage.setItem('album', data[0]['title'])
+                setAlbumID(data[0]['id'])
+                localStorage.setItem('albumID', data[0]['id'])
+            }
+
             setWhichTable(specificTable)
-            localStorage.setItem('album', data[0]['title'])
-            localStorage.setItem('albumID', albumID)
             localStorage.setItem('whichMusicTable', specificTable)
 
             if(data[0]['in_circulation']) {

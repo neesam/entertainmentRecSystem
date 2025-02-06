@@ -319,6 +319,19 @@ app.get('/api/album_bedroomAOR', async (req, res) => {
     }
 });
 
+app.get('/api/album_bodylinesources', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_bodylinesources order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.get('/api/album_brokentransmission', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_brokentransmission order by rand() limit 1`
 
@@ -334,6 +347,19 @@ app.get('/api/album_brokentransmission', async (req, res) => {
 
 app.get('/api/artist_classicalComposer', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.artist_classicalComposer order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_corpsources', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_corpsources order by rand() limit 1`
 
     try {
         const [rows] = await bigquery.query({ query: sqlQuery });
@@ -501,6 +527,19 @@ app.get('/api/album_latenightlofi', async (req, res) => {
     }
 });
 
+app.get('/api/album_luxelitesources', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_luxelitesources order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.get('/api/album_magicsheet', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_magicsheet order by rand() limit 1`
 
@@ -645,6 +684,19 @@ app.get('/api/album_vhspop', async (req, res) => {
 
 app.get('/api/album_vinyls', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_vinyls order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_waterfrontdiningsources', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_waterfrontdiningsources order by rand() limit 1`
 
     try {
         const [rows] = await bigquery.query({ query: sqlQuery });

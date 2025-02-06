@@ -210,18 +210,32 @@ const EntCard = ({
                 </Button>
 
                 <Card.Body>
-                    <Card.Title>
-                    <a 
-                        target='_blank' 
-                        style={{
-                            textDecoration: 'none', 
-                            color: 'black'
-                        }} 
-                        href={toGoogleSearchQuery(attributes.title)} 
-                        rel="noreferrer">
-                            {attributes.title}
-                    </a>
+                    {attributes.title ?  (
+                        <Card.Title>
+                        {attributes.title.includes('https://') ? (
+                            <a 
+                                target='_blank' 
+                                style={{
+                                    textDecoration: 'none', 
+                                    color: 'black'
+                                }} 
+                                href={attributes.title} 
+                                rel="noreferrer">
+                                    Placeholder
+                            </a>
+                        ) : 
+                        <a 
+                            target='_blank' 
+                            style={{
+                                textDecoration: 'none', 
+                                color: 'black'
+                            }} 
+                            href={toGoogleSearchQuery(attributes.title)} 
+                            rel="noreferrer">
+                                {attributes.title}
+                    </a>}
                     </Card.Title>
+                    ) : <></>}
                     <Card.Title style={{fontSize: '10px'}}><a onClick={() => handleTableItemsModalOpen(attributes.table)}>{attributes.table}</a></Card.Title>
                 </Card.Body>
                 <div>
