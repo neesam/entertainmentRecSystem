@@ -345,6 +345,19 @@ app.get('/api/album_brokentransmission', async (req, res) => {
     }
 });
 
+app.get('/api/album_chicagoschool', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_chicagoschool order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.get('/api/artist_classicalComposer', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.artist_classicalComposer order by rand() limit 1`
 
@@ -643,6 +656,19 @@ app.get('/api/album_soundsofspotify', async (req, res) => {
     }
 });
 
+app.get('/api/album_telepath', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_telepath order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.get('/api/album_tolisten', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_tolisten order by rand() limit 1`
 
@@ -723,6 +749,19 @@ app.get('/api/album_waterfrontdiningsources', async (req, res) => {
 
 app.get('/api/album_waterloggedEars', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_waterloggedEars order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_2011vwave', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_2011vwave order by rand() limit 1`
 
     try {
         const [rows] = await bigquery.query({ query: sqlQuery });

@@ -17,6 +17,7 @@ const Album = ({isStaticMode}) => {
     const [backgroundColor, setBackgroundColor] = useState('')
 
     const tables = [
+        'album_2011vwave',
         'album_allgenres',
         'album_ambientvaporwave',
         'album_barberbeats',
@@ -24,6 +25,7 @@ const Album = ({isStaticMode}) => {
         'album_bodylinesources',
         'album_brokentransmission',
         'artist_classicalComposer',
+        'album_chicagoschool',
         'album_corpsources',
         'album_createdbyrejection',
         'album_deathdream',
@@ -46,6 +48,7 @@ const Album = ({isStaticMode}) => {
         'album_slushwave',
         'album_soundsofspotify',
         'album_tolisten',
+        'album_telepath',
         'artist_topartists',
         'album_vaporwave',
         'album_vhspop',
@@ -326,6 +329,8 @@ const Album = ({isStaticMode}) => {
                 deleteFunction={deleteAlbum}
                 addToCirculation={addToCirculation}
                 addToQueue={addToQueue}
+                setEntry={setAlbum}
+                setAlbumID={setAlbumID}
             />
             <ToastContainer />
         </>

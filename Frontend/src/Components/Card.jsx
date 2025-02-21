@@ -15,6 +15,7 @@ const EntCard = ({
         addToQueue, 
         attributes, 
         submitTablesForm,
+        setEntry
     }) => {
         
     const [showTablesModal, setShowTablesModal] = useState(false);
@@ -158,6 +159,14 @@ const EntCard = ({
         }
 
         setShowTableItemsModal(false)
+    }
+
+    const handleSetEntryOnCard = async () => {
+        if(selectedOption) {
+            setEntry(selectedOption)
+        }
+
+        handleTableItemsModalHide()
     }
 
     const handleOptionChange = (event) => setSelectedOption(event.target.value);
@@ -321,6 +330,9 @@ const EntCard = ({
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
+                    <Button variant="primary" onClick={handleSetEntryOnCard}>
+                        Set {selectedOption}
+                    </Button>
                     <Button variant="danger" onClick={handleDeleteFromTable}>
                         Delete
                     </Button>
