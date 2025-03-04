@@ -410,6 +410,19 @@ app.get('/api/album_deathdream', async (req, res) => {
     }
 });
 
+app.get('/api/album_dreamytranscendent', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_dreamytranscendent order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 app.get('/api/album_emo', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_emo order by rand() limit 1`
 
@@ -617,8 +630,22 @@ app.get('/api/album_risecore', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
 app.get('/api/album_rymrecs', async (req, res) => {
     const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_rymrecs order by rand() limit 1`
+
+    try {
+        const [rows] = await bigquery.query({ query: sqlQuery });
+        res.json(rows)
+        console.log(rows)
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
+app.get('/api/album_rymsuggestions', async (req, res) => {
+    const sqlQuery = `select * from ${BQ_PROJECT}.${MUSIC_TABLES_DATASET}.album_rymsuggestions order by rand() limit 1`
 
     try {
         const [rows] = await bigquery.query({ query: sqlQuery });
