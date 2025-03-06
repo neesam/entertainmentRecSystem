@@ -163,13 +163,23 @@ const EntCard = ({
 
     const handleSetEntryOnCard = async () => {
         if(selectedOption) {
-            setEntry(selectedOption)
+            setEntry(selectedOption.title)
+            localStorage.setItem('album', selectedOption.title)
+            localStorage.setItem('original_album_table', selectedOption.original_table)
+            localStorage.setItem('albumID', selectedOption.id)
+            localStorage.setItem('in_circulation', selectedOption.in_circulation)
         }
 
         handleTableItemsModalHide()
     }
 
-    const handleOptionChange = (event) => setSelectedOption(event.target.value);
+    const handleOptionChange = (e) => {
+        const selectedEntry = activeTableEntries.find(entry => entry.id === e.target.value);
+        setSelectedOption(selectedEntry);  
+    };
+
+    const handleTableSelectionOptionChange = (event) => setSelectedOption(event.target.value);
+
 
     function toGoogleSearchQuery(query) {
         // Encode the string to make it URL safe
@@ -286,7 +296,7 @@ const EntCard = ({
                 <Form>
                         <Form.Group controlId="formDropdown">
                             <Form.Label>Choose an Option</Form.Label>
-                            <Form.Control as="select" value={selectedOption} onChange={handleOptionChange}>
+                            <Form.Control as="select" value={selectedOption} onChange={handleTableSelectionOptionChange}>
                                 <option value="">-- Select an option --</option>
                                 {attributes.tables.map((table, index) => (
                                     <option key={index} value={table}>
@@ -318,10 +328,10 @@ const EntCard = ({
                 <Form>
                         <Form.Group controlId="formDropdown">
                             <Form.Label>Choose an Option</Form.Label>
-                            <Form.Control as="select" value={selectedOption} onChange={handleOptionChange}>
+                            <Form.Control as="select" value={selectedOption ? selectedOption.id : ""} onChange={handleOptionChange}>
                                 <option value="">-- Select an option --</option>
-                                {activeTableEntries.map((entry, index) => (
-                                    <option key={index} value={entry.title}>
+                                {activeTableEntries.map((entry) => (
+                                    <option key={entry.id} value={entry.id}>
                                         {entry.title}
                                     </option>
                                 ))}
@@ -330,12 +340,16 @@ const EntCard = ({
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={handleSetEntryOnCard}>
-                        Set {selectedOption}
-                    </Button>
-                    <Button variant="danger" onClick={handleDeleteFromTable}>
-                        Delete
-                    </Button>
+                    {selectedOption ? (
+                        <Button variant="primary" onClick={handleSetEntryOnCard}>
+                            Set
+                        </Button>
+                    ) : <></>}
+                    {selectedOption ? (
+                        <Button variant="danger" onClick={handleDeleteFromTable}>
+                            Delete
+                        </Button>
+                    ) : <></>}
                 </Modal.Footer>
             </Modal>
         </div>

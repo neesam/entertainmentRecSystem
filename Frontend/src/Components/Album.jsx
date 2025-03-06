@@ -62,31 +62,13 @@ const Album = ({isStaticMode}) => {
 
     useEffect(() => {
 
-        const albumValue = localStorage.getItem('album')
-        setAlbum(albumValue)
-
-        const albumIDValue = localStorage.getItem('albumID')
-        setAlbumID(albumIDValue)
-
-        const inCirculationValue = localStorage.getItem('in_circulation')
-        setInCirculation(inCirculationValue)
-
-        const originalTableValue = localStorage.getItem('original_album_table')
-        setOriginalTable(originalTableValue)
-
-        const whichTableValue = localStorage.getItem('whichMusicTable')
-        setWhichTable(whichTableValue)
-
-        const albumBackgroundColor = localStorage.getItem('albumBackgroundColor');
-        setBackgroundColor(albumBackgroundColor)
-
         if (isStaticMode === false) {
             const randColor = randomColor()
             setBackgroundColor(randColor)
             localStorage.setItem('albumBackgroundColor', randColor);
         }
 
-    }, [localStorage.getItem('album')]);
+    }, [album]);
 
     const getAlbum = async () => {
 
@@ -173,31 +155,24 @@ const Album = ({isStaticMode}) => {
 
             console.log(data)
 
-            if(data[0]['link']) {
-                localStorage.setItem('album', data[0]['link'])
-            } else {
-                localStorage.setItem('album', data[0]['title'])
-                localStorage.setItem('albumID', data[0]['id'])
-            }
+            const albumVal = data[0]['link'] || data[0]['title']
+            const albumIDVal = data[0]['id']
+            const in_circulation = data[0]['in_circulation'] || 'false'
+            const originalTableVal = data[0]['original_table'] || null
+            const bgColor = randomColor()
 
+            localStorage.setItem('album', albumVal)
+            localStorage.setItem('albumID', albumIDVal)
+            localStorage.setItem('in_circulation', in_circulation)
+            localStorage.setItem('original_album_table', originalTableVal)
             localStorage.setItem('whichMusicTable', specificTable)
 
-            if(data[0]['in_circulation']) {
-                localStorage.setItem('in_circulation', data[0]['in_circulation'])
-            } else {
-                localStorage.setItem('in_circulation', 'false')
-            }
-
-            if(data[0]['original_table']) {
-                localStorage.setItem('original_album_table', data[0]['original_table'])
-            } else {
-                localStorage.setItem('original_album_table', null)
-            }
-
-            // Logic to change background on each button press
-
-            const bgColor = randomColor()
-            localStorage.setItem('albumBackgroundColor', bgColor)
+            setAlbum(albumVal)
+            setAlbumID(albumIDVal)
+            setInCirculation(in_circulation)
+            setOriginalTable(originalTableVal)
+            setWhichTable(specificTable)
+            setBackgroundColor(bgColor)
     }
 
     const deleteAlbum = async () => {
@@ -268,13 +243,13 @@ const Album = ({isStaticMode}) => {
             console.error('Error during deletion:', error.message);
         }
 
+        setInCirculation('true')
+        localStorage.setItem('in_circulation', 'true')
+
         toast('Added to inCirculation!', {
             autoClose: 2000,
             theme: "light",
             });
-
-        setInCirculation('true')
-        localStorage.setItem('in_circulation', 'true')
     }
 
     const addToQueue = async () => {
