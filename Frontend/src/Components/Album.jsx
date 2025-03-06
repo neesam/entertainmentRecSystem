@@ -86,7 +86,7 @@ const Album = ({isStaticMode}) => {
             localStorage.setItem('albumBackgroundColor', randColor);
         }
 
-    }, []);
+    }, [localStorage.getItem('album')]);
 
     const getAlbum = async () => {
 
@@ -102,18 +102,14 @@ const Album = ({isStaticMode}) => {
             console.log(data[0]['id'])
 
             if(data[0]['link']) {
-                setAlbum(data[0]['link'])
                 localStorage.setItem('album', data[0]['link'])
             } else {
-                setAlbum(data[0]['title'])
                 localStorage.setItem('album', data[0]['title'])
-                setAlbumID(data[0]['id'])
                 localStorage.setItem('albumID', data[0]['id'])
             }
 
-            setInCirculation('false')
             localStorage.setItem('in_circulation', 'false')
-
+            
             // Logic to change background on each button press
 
             const bgColor = randomColor()
@@ -178,38 +174,29 @@ const Album = ({isStaticMode}) => {
             console.log(data)
 
             if(data[0]['link']) {
-                setAlbum(data[0]['link'])
                 localStorage.setItem('album', data[0]['link'])
             } else {
-                setAlbum(data[0]['title'])
                 localStorage.setItem('album', data[0]['title'])
-                setAlbumID(data[0]['id'])
                 localStorage.setItem('albumID', data[0]['id'])
             }
 
-            setWhichTable(specificTable)
             localStorage.setItem('whichMusicTable', specificTable)
 
             if(data[0]['in_circulation']) {
-                setInCirculation(data[0]['in_circulation'])
                 localStorage.setItem('in_circulation', data[0]['in_circulation'])
             } else {
-                setInCirculation(null)
-                localStorage.setItem('in_circulation', null)
+                localStorage.setItem('in_circulation', 'false')
             }
 
             if(data[0]['original_table']) {
-                setOriginalTable(data[0]['original_table'])
                 localStorage.setItem('original_album_table', data[0]['original_table'])
             } else {
-                setOriginalTable(null)
                 localStorage.setItem('original_album_table', null)
             }
 
             // Logic to change background on each button press
 
             const bgColor = randomColor()
-            setBackgroundColor(bgColor)
             localStorage.setItem('albumBackgroundColor', bgColor)
     }
 
@@ -249,7 +236,7 @@ const Album = ({isStaticMode}) => {
                 console.log(await response.json());
                 console.log('Album deleted successfully.');
 
-                setInCirculation('false')
+                // setInCirculation('false')
 
                 getAlbum()
             } catch (error) {
